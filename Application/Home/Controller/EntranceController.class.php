@@ -1,8 +1,8 @@
 <?php
 namespace Home\Controller;
 use Think\Controller;
-class IndexController extends Controller {
+class EntranceController extends Controller {
     public function index(){
-        $this->display();
+        $this->display("Index:index");
     }
 }
