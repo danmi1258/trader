@@ -11,28 +11,24 @@
     <load href="__PUBLIC__/css/index.css" />
     <load href="__PUBLIC__/css/entrance.css" />
     <load href="__PUBLIC__/css/black.css" />
-    <LINK href="/favicon.ico" type="image/x-icon" rel=icon>
-    <LINK href="/favicon.ico" type="image/x-icon" rel="shortcut icon">
+    <link href="https://beta.traderwork.com//favicon/favicon_0.ico" type="image/x-icon" rel=icon>
+    <link href="https://beta.traderwork.com//favicon/favicon_0.ico" type="image/x-icon" rel="shortcut icon">
+
     <load href="__PUBLIC__/js/jquery-1.11.3.min.js" />
     <load href='__PUBLIC__/build/react.js' />
     <load href="__PUBLIC__/build/JSXTransformer.js" />
 
 
 
-    <style>
-        .header .logo {
-            background-image : url('https://p-static2.b0.upaiyun.com/build/images/logo/bg_logo_0.png')
-        }
-    </style>
-
 
 </head>
 
 <body>
-
-
-    
-</body>
+    <div class="container-wrapper">
+        <div class="logo"></div>
+        <div class="slogan">交易者的世界，做世界的交易</div>
+        <div class="form-wrapper" id="formWrapper"></div>
+    </div>
     <script >
     var WEBSOCKET_URL = 'wss://beta.traderwork.com/api/v1/channel';
 
@@ -46,6 +42,10 @@
         s.parentNode.insertBefore(hm, s);
     })();
     </script>
+    
+</body>
+
+
     <load href='__PUBLIC__/js/common.js' />
-     <load href="__PUBLIC__/js/homepage.js" />
+     <load href="__PUBLIC__/js/entrance.js" />
 </html>
