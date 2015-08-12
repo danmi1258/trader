@@ -102,7 +102,7 @@ webpackJsonp([3], {
                                 window.location.href = o + p + "token=" + a.token + "&nickname=" + encodeURIComponent(a.nickname) + "&avatar=" + s
                             } else {
                                 var o = c.getParameterByName("return_url");
-                                o ? window.location.href = o : window.location.href = "/app"
+                                o ? window.location.href = o : window.location.href = "index/index"
                             }
                         } else {
                             var h = Number(l.getItem(u.loginTimes.key)) + 1,
@@ -254,7 +254,7 @@ webpackJsonp([3], {
                         var t = e.data.result;
                         if (t === f.request.success) {
                             var r = d.getParameterByName("return_url");
-                            r ? window.location.href = r : window.location.href = "/app"
+                            r ? window.location.href = r : window.location.href = "index/index"
                         } else {
                             var n = e.data.message;
                             n.indexOf(p.captchaCode) > -1 ? this.setState({

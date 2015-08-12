@@ -3821,7 +3821,7 @@
     }, i.getUpYunConfig = function(e) {
         return r.doGet("/api/v1/upyun/config/" + e)
     }, i.getPackageInfo = function(e) {
-        var t = "/api/v1/trade/sign-in-package";
+        var t = '/trader/index.php/Home/data/quote_history';
         return r.doGet(t, e)
     }, i.getAccounts = function() {
         var e = "/api/v1/trade/bind-mt4/list";
@@ -6565,7 +6565,7 @@
     i.searchSymbols = function(e) {
         return r.doPost("/api/v1/trade/symbols/search", e)
     }, i.getHistoryQuote = function(e, t, n, i) {
-        return r.doGet("/api/v1/trade/quote-histories/" + e + "/" + t + "/" + n, i)
+        return r.doGet("data/quote_historiy/" + e + "/" + t + "/" + n, i)
     }, i.getSymbolDetail = function(e) {
         return r.doGet("/api/v1/trade/" + e + "/detail")
     }, e.exports = i
