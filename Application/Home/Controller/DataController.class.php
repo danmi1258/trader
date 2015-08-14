@@ -27,13 +27,14 @@ use Thrift ;
 
 class DataController extends Controller {
 	private $client ;
-	public function __initialize(){
+
+	public function _initialize(){
 		$socket = new TSocket('10.21.24.74', 9091);
     	$transport = new TBufferedTransport($socket, 1024, 1024);
     	$protocol = new TBinaryProtocol($transport);
     	$transport->open();
-    	$client = new \Thrift\MT4WebServiceClient($protocol);
-
+    	$this->client = new \Thrift\MT4WebServiceClient($protocol);
+    	
 
 	}
 
@@ -41,8 +42,8 @@ class DataController extends Controller {
 
     public function quote_history($symbol="EURUSD",$period="4"){
 
-
-    	$client->testSayHi() ;
+    	$this->client->testSayHi() ;
+    	
     	$ret = array("result"=>1,"data"=>array()) ;
     	echo json_encode($ret) ;
     }
