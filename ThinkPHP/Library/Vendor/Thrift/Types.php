@@ -1611,11 +1611,11 @@ class MT4ConSessions {
   static $_TSPEC;
 
   /**
-   * @var \MT4ConSession[]
+   * @var MT4ConSession[]
    */
   public $quote = null;
   /**
-   * @var \MT4ConSession[]
+   * @var MT4ConSession[]
    */
   public $trade = null;
   /**
@@ -1636,7 +1636,7 @@ class MT4ConSessions {
           'etype' => TType::STRUCT,
           'elem' => array(
             'type' => TType::STRUCT,
-            'class' => '\MT4ConSession',
+            'class' => 'MT4ConSession',
             ),
           ),
         2 => array(
@@ -1645,7 +1645,7 @@ class MT4ConSessions {
           'etype' => TType::STRUCT,
           'elem' => array(
             'type' => TType::STRUCT,
-            'class' => '\MT4ConSession',
+            'class' => 'MT4ConSession',
             ),
           ),
         3 => array(
@@ -1702,7 +1702,7 @@ class MT4ConSessions {
             for ($_i18 = 0; $_i18 < $_size14; ++$_i18)
             {
               $elem19 = null;
-              $elem19 = new \MT4ConSession();
+              $elem19 = new MT4ConSession();
               $xfer += $elem19->read($input);
               $this->quote []= $elem19;
             }
@@ -1720,7 +1720,7 @@ class MT4ConSessions {
             for ($_i24 = 0; $_i24 < $_size20; ++$_i24)
             {
               $elem25 = null;
-              $elem25 = new \MT4ConSession();
+              $elem25 = new MT4ConSession();
               $xfer += $elem25->read($input);
               $this->trade []= $elem25;
             }
@@ -1867,7 +1867,7 @@ class MT4ConSymbol {
    */
   public $expiration = null;
   /**
-   * @var \MT4ConSessions[]
+   * @var MT4ConSessions[]
    */
   public $sessions = null;
   /**
@@ -2080,7 +2080,7 @@ class MT4ConSymbol {
           'etype' => TType::STRUCT,
           'elem' => array(
             'type' => TType::STRUCT,
-            'class' => '\MT4ConSessions',
+            'class' => 'MT4ConSessions',
             ),
           ),
         16 => array(
@@ -2512,7 +2512,7 @@ class MT4ConSymbol {
             for ($_i32 = 0; $_i32 < $_size28; ++$_i32)
             {
               $elem33 = null;
-              $elem33 = new \MT4ConSessions();
+              $elem33 = new MT4ConSessions();
               $xfer += $elem33->read($input);
               $this->sessions []= $elem33;
             }
@@ -3258,19 +3258,19 @@ class MT4RateInfo {
    */
   public $ctm = null;
   /**
-   * @var int
+   * @var double
    */
   public $open = null;
   /**
-   * @var int
+   * @var double
    */
   public $high = null;
   /**
-   * @var int
+   * @var double
    */
   public $low = null;
   /**
-   * @var int
+   * @var double
    */
   public $close = null;
   /**
@@ -3287,19 +3287,19 @@ class MT4RateInfo {
           ),
         2 => array(
           'var' => 'open',
-          'type' => TType::I32,
+          'type' => TType::DOUBLE,
           ),
         3 => array(
           'var' => 'high',
-          'type' => TType::I32,
+          'type' => TType::DOUBLE,
           ),
         4 => array(
           'var' => 'low',
-          'type' => TType::I32,
+          'type' => TType::DOUBLE,
           ),
         5 => array(
           'var' => 'close',
-          'type' => TType::I32,
+          'type' => TType::DOUBLE,
           ),
         6 => array(
           'var' => 'vol',
@@ -3356,29 +3356,29 @@ class MT4RateInfo {
           }
           break;
         case 2:
-          if ($ftype == TType::I32) {
-            $xfer += $input->readI32($this->open);
+          if ($ftype == TType::DOUBLE) {
+            $xfer += $input->readDouble($this->open);
           } else {
             $xfer += $input->skip($ftype);
           }
           break;
         case 3:
-          if ($ftype == TType::I32) {
-            $xfer += $input->readI32($this->high);
+          if ($ftype == TType::DOUBLE) {
+            $xfer += $input->readDouble($this->high);
           } else {
             $xfer += $input->skip($ftype);
           }
           break;
         case 4:
-          if ($ftype == TType::I32) {
-            $xfer += $input->readI32($this->low);
+          if ($ftype == TType::DOUBLE) {
+            $xfer += $input->readDouble($this->low);
           } else {
             $xfer += $input->skip($ftype);
           }
           break;
         case 5:
-          if ($ftype == TType::I32) {
-            $xfer += $input->readI32($this->close);
+          if ($ftype == TType::DOUBLE) {
+            $xfer += $input->readDouble($this->close);
           } else {
             $xfer += $input->skip($ftype);
           }
@@ -3409,23 +3409,23 @@ class MT4RateInfo {
       $xfer += $output->writeFieldEnd();
     }
     if ($this->open !== null) {
-      $xfer += $output->writeFieldBegin('open', TType::I32, 2);
-      $xfer += $output->writeI32($this->open);
+      $xfer += $output->writeFieldBegin('open', TType::DOUBLE, 2);
+      $xfer += $output->writeDouble($this->open);
       $xfer += $output->writeFieldEnd();
     }
     if ($this->high !== null) {
-      $xfer += $output->writeFieldBegin('high', TType::I32, 3);
-      $xfer += $output->writeI32($this->high);
+      $xfer += $output->writeFieldBegin('high', TType::DOUBLE, 3);
+      $xfer += $output->writeDouble($this->high);
       $xfer += $output->writeFieldEnd();
     }
     if ($this->low !== null) {
-      $xfer += $output->writeFieldBegin('low', TType::I32, 4);
-      $xfer += $output->writeI32($this->low);
+      $xfer += $output->writeFieldBegin('low', TType::DOUBLE, 4);
+      $xfer += $output->writeDouble($this->low);
       $xfer += $output->writeFieldEnd();
     }
     if ($this->close !== null) {
-      $xfer += $output->writeFieldBegin('close', TType::I32, 5);
-      $xfer += $output->writeI32($this->close);
+      $xfer += $output->writeFieldBegin('close', TType::DOUBLE, 5);
+      $xfer += $output->writeDouble($this->close);
       $xfer += $output->writeFieldEnd();
     }
     if ($this->vol !== null) {

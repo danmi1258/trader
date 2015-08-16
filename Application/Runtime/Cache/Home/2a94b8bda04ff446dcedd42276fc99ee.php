@@ -8,15 +8,15 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <title>Trader Work</title>
 
-    <link rel="stylesheet" type="text/css" href="/trader/Public/css/index.css" />
-    <link rel="stylesheet" type="text/css" href="/trader/Public/css/entrance.css" />
-    <link rel="stylesheet" type="text/css" href="/trader/Public/css/black.css" />
+    <link rel="stylesheet" type="text/css" href="/github/trader/Public/css/index.css" />
+    <link rel="stylesheet" type="text/css" href="/github/trader/Public/css/entrance.css" />
+    <link rel="stylesheet" type="text/css" href="/github/trader/Public/css/black.css" />
 
     <LINK href="https://beta.traderwork.com///favicon.ico" type="image/x-icon" rel=icon>
     <LINK href="https://beta.traderwork.com///favicon.ico" type="image/x-icon" rel="shortcut icon">
-    <script type="text/javascript" src="/trader/Public/js/jquery-1.11.3.min.js"></script>
-    <script type="text/javascript" src="/trader/Public/build/react.js"></script>
-    <script type="text/javascript" src="/trader/Public/build/JSXTransformer.js"></script>
+    <script type="text/javascript" src="/github/trader/Public/js/jquery-1.11.3.min.js"></script>
+    <script type="text/javascript" src="/github/trader/Public/build/react.js"></script>
+    <script type="text/javascript" src="/github/trader/Public/build/JSXTransformer.js"></script>
 
 
 
@@ -47,6 +47,6 @@
         s.parentNode.insertBefore(hm, s);
     })();
     </script>
-    <script type="text/javascript" src="/trader/Public/js/common.js"></script>
-     <script type="text/javascript" src="/trader/Public/js/homepage.js"></script>
+    <script type="text/javascript" src="/github/trader/Public/js/common.js"></script>
+     <script type="text/javascript" src="/github/trader/Public/js/homepage.js"></script>
 </html>
