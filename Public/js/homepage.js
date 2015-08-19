@@ -3669,7 +3669,7 @@ webpackJsonp([4], [function(e, t, r) {
             })
         },
         u = function() {
-            document.body.style.visibility = "hidden", window.stop && window.stop() || document.execCommand && document.execCommand("Stop"), window.location.href = "/entrance"
+            document.body.style.visibility = "hidden", window.stop && window.stop() || document.execCommand && document.execCommand("Stop"), window.location.href = "/trader/index.php/Home/entrance"
         },
         h = function() {
             var e = n.getUserInfo();
@@ -3793,7 +3793,7 @@ webpackJsonp([4], [function(e, t, r) {
             },
             _onLogout: function() {
                 var e = l.getUserInfo();
-                l.clearUserInfo(), 1 == e.tenantId ? window.location.href = f.wallStreetLogout : window.location.href = "/entrance"
+                l.clearUserInfo(), 1 == e.tenantId ? window.location.href = f.wallStreetLogout : window.location.href = "/trader/index.php/Home/entrance"
             },
             _closePanel: function() {
                 this.setState({

@@ -3821,7 +3821,7 @@
     }, i.getUpYunConfig = function(e) {
         return r.doGet("/api/v1/upyun/config/" + e)
     }, i.getPackageInfo = function(e) {
-        var t = '/trader/index.php/Home/data/quote_history';
+        var t = '/trader/index.php/Home/api/sign_in_package';
         return r.doGet(t, e)
     }, i.getAccounts = function() {
         var e = "/api/v1/trade/bind-mt4/list";
@@ -6565,7 +6565,7 @@
     i.searchSymbols = function(e) {
         return r.doPost("/api/v1/trade/symbols/search", e)
     }, i.getHistoryQuote = function(e, t, n, i) {
-        return r.doGet("data/quote_historiy/" + e + "/" + t + "/" + n, i)
+        return r.doGet("/trader/index.php/Home/data/quote_history/" + e + "/" + t + "/" + n, i)
     }, i.getSymbolDetail = function(e) {
         return r.doGet("/api/v1/trade/" + e + "/detail")
     }, e.exports = i
@@ -6975,7 +6975,7 @@
                 })
             },
             _onLogout: function() {
-                o.clearUserInfo(), window.location.href = "/entrance"
+                o.clearUserInfo(), window.location.href = "/trader/index.php/Home/entrance"
             },
             render: function() {
                 return r.createElement(i, {
@@ -7017,7 +7017,7 @@
                 }), this._onLogout()
             },
             _onLogout: function() {
-                1 == this.userInfo.tenantId ? window.location.href = l.wallStreetLogout : window.location.href = "/entrance"
+                1 == this.userInfo.tenantId ? window.location.href = l.wallStreetLogout : window.location.href = "/trader/index.php/Home/entrance"
             },
             render: function() {
                 return r.createElement(i, {

@@ -1,7 +1,7 @@
 <?php
 namespace Home\Controller ;
 use Think\Controller;
-use \Think\Log ;
+use Think\Log ;
 Vendor('Thrift.ClassLoader.ThriftClassLoader','','.php') ;
 Vendor('Thrift','','.php') ;
 
@@ -29,7 +29,7 @@ class DataController extends Controller {
 	private static $client =null;
 
     private static function _loadClient(){
-        $socket = new TSocket('localhost', 9091);
+        $socket = new TSocket('10.21.24.74', 9091);
       
         $socket->setSendTimeout(20000);
         $socket->setRecvTimeout(8000000); 
@@ -49,12 +49,14 @@ class DataController extends Controller {
 
 
 
-    public function quote_history($symbol="EURUSD",$period="4"){
+    public function quote_history($symbol="EURUSD",$period="4",$unuse="0"){
+    	$_ = I("get._") ;
+    	$now = (int)substr($_,0,10) ;
         $timeGap=0 ;
-        $arrayLength=1 ;
+        $arrayLength=2000;
         switch($period){
             case 0:
-                $timeGap=60* $arrayLength;
+                $timeGap=60 * $arrayLength;
                 $period = \Thrift\MT4PERIOD_TYPE::P_PERIOD_M1 ;
                 break ;
             case 1:
@@ -78,8 +80,7 @@ class DataController extends Controller {
                 $period = \Thrift\MT4PERIOD_TYPE::P_PERIOD_H4 ;
                 break ;
             case 6:
-                //$timeGap=86400* $arrayLength;
-                $timeGap=43200 *  $arrayLength;
+                $timeGap=86400* $arrayLength;
                 $period = \Thrift\MT4PERIOD_TYPE::P_PERIOD_D1 ;
                 break ;
             case 7:
@@ -90,16 +91,21 @@ class DataController extends Controller {
                 $timeGap=2592000* $arrayLength;
                 $period = \Thrift\MT4PERIOD_TYPE::P_PERIOD_MN1 ;
                 break ;
+             default:
+             	$timeGap=3600* $arrayLength;
+             	$period = \Thrift\MT4PERIOD_TYPE::P_PERIOD_H1 ;
         }
         $ci = new \Thrift\MT4ChartInfo() ;
         $ci->symbol= $symbol;
-        $ci->start= 1439020319;
-        $ci->_end= $ci->start + 86400 ;
+
+        $ci->_end= $now;
+        $ci->start= $now - $timeGap;
         //$ci->period=  \Thrift\MT4PERIOD_TYPE::P_PERIOD_M1;
         $ci->period = $period ;
         $ci->mode= \Thrift\MT4CHART_TYPE::C_CHART_RANGE_IN;
+        $ci->timesign = 0 ;
         //$this->client->testSayHi() ;
-        dump($ci);
+        //dump($ci);
         try {
                 $ret = array("result"=>1,"data"=>array()) ;
                 $qh=self::$client->getHistoryChartData($ci) ;
