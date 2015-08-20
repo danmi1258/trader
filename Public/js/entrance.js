@@ -597,7 +597,7 @@ webpackJsonp([3], {
                             e.data.result !== l.request.success ? this.setState({
                                 errorMsg: e.data.message
                             }) : window.setTimeout(function() {
-                                window.location.href = "/trader/index.php/Home/entrance"
+                                window.location.href = "entrance"
                             }, 200);
                             break;
                         case "checkAccountValid":

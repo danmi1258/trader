@@ -6565,9 +6565,9 @@
     i.searchSymbols = function(e) {
         return r.doPost("/api/v1/trade/symbols/search", e)
     }, i.getHistoryQuote = function(e, t, n, i) {
-        return r.doGet("/trader/index.php/Home/data/quote_history/" + e + "/" + t + "/" + n, i)
+        return r.doGet("../data/quote_history/" + e + "/" + t + "/" + n, i)
     }, i.getSymbolDetail = function(e) {
-        return r.doGet("/trader/index.php/Home/data/symbol_detail/" + e + "/detail")
+        return r.doGet("../data/symbol_detail/" + e + "/detail")
     }, e.exports = i
 }, function(e, t, n) {
     "use strict";
@@ -6975,7 +6975,7 @@
                 })
             },
             _onLogout: function() {
-                o.clearUserInfo(), window.location.href = "/trader/index.php/Home/entrance"
+                o.clearUserInfo(), window.location.href = "../entrance"
             },
             render: function() {
                 return r.createElement(i, {
@@ -7017,7 +7017,7 @@
                 }), this._onLogout()
             },
             _onLogout: function() {
-                1 == this.userInfo.tenantId ? window.location.href = l.wallStreetLogout : window.location.href = "/trader/index.php/Home/entrance"
+                1 == this.userInfo.tenantId ? window.location.href = l.wallStreetLogout : window.location.href = "../entrance"
             },
             render: function() {
                 return r.createElement(i, {
