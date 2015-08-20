@@ -100,7 +100,6 @@ class DataController extends Controller {
 
         $ci->_end= $now;
         $ci->start= $now - $timeGap;
-        //$ci->period=  \Thrift\MT4PERIOD_TYPE::P_PERIOD_M1;
         $ci->period = $period ;
         $ci->mode= \Thrift\MT4CHART_TYPE::C_CHART_RANGE_IN;
         $ci->timesign = 0 ;
@@ -109,7 +108,7 @@ class DataController extends Controller {
         try {
                 $ret = array("result"=>1,"data"=>array()) ;
                 $qh=self::$client->getHistoryChartData($ci) ;
-                echo count($qh);
+                //echo count($qh);
                 foreach($qh as $k => $v){
                     $v->s = $symbol ;
                     $v->t = $v->ctm ;
@@ -133,8 +132,14 @@ class DataController extends Controller {
     }
 
     public function symbol_detail($symbol="EURUSD"){
+    	$_ = I("get._") ;
+    	$now = (int)substr($_,0,10) ;
 
-        $ret=self::$client->symbolDetail($symbol);
+        $symbolInfo=self::$client->symbolDetail($symbol);
+
+        // add tradeTime in symbol detail
+        $symbolInfo->tradeTime = array("endDay"=>5,"endTime"=>"21:00" ,"startDay"=>0,"startTime"=>"21:05" ) ;
+        $ret = array("result"=>1,"message"=>null,"data"=>$symbolInfo) ;
         echo json_encode($ret);
 
 

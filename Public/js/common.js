@@ -6567,7 +6567,7 @@
     }, i.getHistoryQuote = function(e, t, n, i) {
         return r.doGet("/trader/index.php/Home/data/quote_history/" + e + "/" + t + "/" + n, i)
     }, i.getSymbolDetail = function(e) {
-        return r.doGet("/api/v1/trade/" + e + "/detail")
+        return r.doGet("/trader/index.php/Home/data/symbol_detail/" + e + "/detail")
     }, e.exports = i
 }, function(e, t, n) {
     "use strict";
