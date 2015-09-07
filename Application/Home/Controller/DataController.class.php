@@ -29,7 +29,7 @@ class DataController extends Controller {
 	private static $client =null;
 
     private static function _loadClient(){
-        $socket = new TSocket('10.21.24.74', 9091);
+        $socket = new TSocket('10.21.24.52', 9091);
       
         $socket->setSendTimeout(20000);
         $socket->setRecvTimeout(8000000); 
@@ -141,9 +141,6 @@ class DataController extends Controller {
         $symbolInfo->tradeTime = array("endDay"=>5,"endTime"=>"21:00" ,"startDay"=>0,"startTime"=>"21:05" ) ;
         $ret = array("result"=>1,"message"=>null,"data"=>$symbolInfo) ;
         echo json_encode($ret);
-
-
-
 
     }
 }

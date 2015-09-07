@@ -35,7 +35,7 @@
     
 </body>
     <script >
-    var WEBSOCKET_URL = 'wss://beta.traderwork.com/api/v1/channel';
+    var WEBSOCKET_URL = 'ws://10.21.24.52:443/data/channel';
 
     var _hmt = _hmt || [];
     (function() {

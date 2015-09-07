@@ -38,7 +38,7 @@
 }([, , , , , , function(e, t, n) {
     "use strict";
     var r = {};
-    var WEBSOCKET_URL='wss://beta.traderwork.com/api/v1/channel';
+    var WEBSOCKET_URL='ws://10.21.24.52:443/data/channel';
     r.bodyMinWidth = 1024, r.mainMinWidth = r.bodyMinWidth - 10, r.symbolPanelMinWidth = 320, r.separatorWidth = 5, r.tabPanelPadding = 12, r.userInfo = "userInfo", r.AuthString = "X-AuthString", r.ApiKey = "X-ApiKey", r.expired = 1800, r.webSocketUrl = WEBSOCKET_URL || "ws://120.26.48.118:8080/api/v1/channel", r.typeQuotation = "01", r.typeOrder = "02", r.typeSymbol = "03", r.typeAccount = "04", r.verificationImg = "/api/v1/verification/img?randomKey=", r.request = {
         success: 1,
         failed: 0
