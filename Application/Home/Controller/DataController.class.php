@@ -108,11 +108,15 @@ class DataController extends Controller {
         try {
                 $ret = array("result"=>1,"data"=>array()) ;
                 $qh=self::$client->getHistoryChartData($ci) ;
+                        $symbolInfo=self::$client->symbolDetail($symbol);
+                        $p=$symbolInfo->digits ;
+
                 //echo count($qh);
                 foreach($qh as $k => $v){
                     $v->s = $symbol ;
                     $v->t = $v->ctm ;
                     unset($v->ctm) ;
+                    $v->p=$p ;
                     $v->o = $v->open ;
                     unset($v->open);
                     $v->c = $v->close ;
@@ -122,6 +126,7 @@ class DataController extends Controller {
                     $v->l = $v->low ;
                     unset($v->low);
                     unset($v->vol) ;
+                  
                     array_push($ret['data'],$v) ;
 
                 }
