@@ -127,7 +127,7 @@ class DataController extends Controller {
                 }
                 echo json_encode($ret) ;
         } catch (Exception $e) {
-                echo json_decode(array("result"=>-1,"message"=>"".$e)) ;
+                echo json_encode(array("result"=>-1,"message"=>"".$e)) ;
         }
     }
 
@@ -135,11 +135,17 @@ class DataController extends Controller {
     	$_ = I("get._") ;
     	$now = (int)substr($_,0,10) ;
 
+
         $symbolInfo=self::$client->symbolDetail($symbol);
 
         // add tradeTime in symbol detail
         $symbolInfo->tradeTime = array("endDay"=>5,"endTime"=>"21:00" ,"startDay"=>0,"startTime"=>"21:05" ) ;
+            $symbolInfo->description =mb_convert_encoding($symbolInfo->description,'utf8','gbk');;
         $ret = array("result"=>1,"message"=>null,"data"=>$symbolInfo) ;
+    
+     //   $ret->data->description=mb_convert_encoding($ret->data->description,'utf8','gbk');
+      //  echo  $ret->data->description ;
+      //  var_dump($ret) ;
         echo json_encode($ret);
 
     }
