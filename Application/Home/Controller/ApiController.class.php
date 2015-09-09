@@ -9,7 +9,7 @@ class ApiController extends Controller {
     	Log::record($account."".$pwd) ;
     
     
-    	$all = '{"data":{"account":"947742853@qq.com","apiKey":"ed8b72515a1577c26edebf2f2654238d74108b6d","articleVisible":1,"authString":"0,947742853@qq.com,1439045570","brokerDomain":null,"bwTenant":null,"device":null,"email":"947742853@qq.com","expiredAt":1441862842,"guest":false,"ip":"222.41.113.210","locale":"zh","login":null,"mt4Group":null,"nickname":"test123","phone":null,"randomKey":null,"serviceId":null,"symbols":null,"tenantId":"0","tenantName":null,"token":"1439112842,266,24e8bc0ef5","twTimeout":30,"userAvatar":"https://p-picture.b0.upaiyun.com/default_avatar.jpg","userId":266,"verification":null},"message":"登录成功","result":1}';
+    	$all = '{"data":{"account":"947742853@qq.com","apiKey":"ed8b72515a1577c26edebf2f2654238d74108b6d","articleVisible":1,"authString":"0,947742853@qq.com,1439045570","brokerDomain":null,"bwTenant":null,"device":null,"email":"947742853@qq.com","expiredAt":1443862842,"guest":false,"ip":"222.41.113.210","locale":"zh","login":null,"mt4Group":null,"nickname":"test123","phone":null,"randomKey":null,"serviceId":null,"symbols":null,"tenantId":"0","tenantName":null,"token":"1439112842,266,24e8bc0ef5","twTimeout":30,"userAvatar":"https://p-picture.b0.upaiyun.com/default_avatar.jpg","userId":266,"verification":null},"message":"登录成功","result":1}';
 
 		$data = json_decode($all);
 

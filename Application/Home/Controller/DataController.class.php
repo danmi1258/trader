@@ -29,7 +29,7 @@ class DataController extends Controller {
 	private static $client =null;
 
     private static function _loadClient(){
-        $socket = new TSocket('10.21.24.52', 9091);
+        $socket = new TSocket('182.92.223.200', 9091);
       
         $socket->setSendTimeout(20000);
         $socket->setRecvTimeout(8000000); 

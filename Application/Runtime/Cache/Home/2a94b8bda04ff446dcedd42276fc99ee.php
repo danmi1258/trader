@@ -35,7 +35,7 @@
     
 </body>
     <script >
-    var WEBSOCKET_URL = 'ws://10.21.24.52:443/data/channel';
+    var WEBSOCKET_URL = 'ws://182.92.223.200:443/data/channel';
 
     var _hmt = _hmt || [];
     (function() {
