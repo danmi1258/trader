@@ -6574,17 +6574,17 @@
     var r = n(145),
         i = (n(34), {});
     i.getPositions = function(e) {
-        return r.doPost("/api/v1/trade/positions/search", e)
+        return r.doPost("/trader/index.php/Home/Order/search_trade", e)
     }, i.getHisPositions = function(e) {
-        return r.doPost("/api/v1/trade/trade-histories/search", e)
+        return r.doPost("/trader/index.php/Home/Order/search_history", e)
     }, i.createOrder = function(e) {
-        return r.doPost("/api/v1/trade/order/open", e)
+        return r.doPost("/trader/index.php/Home/Order/open", e)
     }, i.changeOrder = function(e) {
-        return r.doPost("/api/v1/trade/order/update", e)
+        return r.doPost("/trader/index.php/Home/Order/update", e)
     }, i.closeOrder = function(e) {
-        return r.doPost("/api/v1/trade/order/close", e)
+        return r.doPost("/trader/index.php/Home/Order/close", e)
     }, i.deleteOrder = function(e) {
-        return r.doPost("/api/v1/trade/order/delete", e)
+        return r.doPost("/trader/index.php/Home/Order/delete", e)
     }, e.exports = i
 }, function(e, t, n) {
     "use strict";

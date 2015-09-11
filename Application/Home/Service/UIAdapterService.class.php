@@ -232,12 +232,12 @@ class UIAdapterService extends Model {
         $data = new \stdClass;
         if($result['result'] == 1)
         {
-            $data->error_code = "0";
+            $data->error_code = 0;
             $data->error_message = "RET_OK";
-            $data->order = $order['orderid'];
+            $data->order = $order['tradeid'];
 
         }else {
-            $data->error_code = "1";
+            $data->error_code = 1;
             $data->error_message = "System Inner Error";
         }
 
@@ -271,4 +271,124 @@ class UIAdapterService extends Model {
         $orderpara->order = NULL;
         return $orderpara;
     }
+
+
+    public function parseResultToAckInOrdersSearch($orderslist)
+    {
+        $orders = array();
+        foreach($orderslist as $order)
+        {
+            $data = new \stdClass;
+            $data->activation = 0;
+            $data->close_price = 0;  //平仓之后的价格
+            $data->close_time = 1;
+            $data->cmd = (int)$order['tradetype'];
+            $data->comment = $order['comments'];
+            $data->commission = 0;
+            $data->commission_agent = 0;
+            $data->conv_rates1 = 0;
+            $data->conv_rates2 = 0;
+            $data->digits = 3;
+            $data->expiration = 0;
+            $data->internal_id = NULL;
+            $data->login = 2089045865;
+            $data->magic = 0;
+            $data->open_price = $order['operstartprice'];
+            $data->open_time = strtotime($order['operstarttime']);
+            $data->order = $order['tradeid'];
+            $data->profit = 0;
+            $data->reserved1 = 0;
+            $data->reserved2 = 0;
+            $data->reserved3 = 0;
+            $data->reserved4 = 0;
+            $data->sl = $order['stopgainprice'];
+            $data->spread = NULL;
+            $data->state = 0;  //?
+            $data->storage = 0;   //?
+            $data->symbol = $order['goodname'];
+            $data->taxes = 0; //?
+            $data->timestamp = NULL;  //?
+            $data->tp = $order['stoplossprice'];
+            $data->value_date = NULL; //
+            $data->volume = $order['tradenum']; //
+            $orders[] = $data;
+        }
+
+        $data = new \stdClass;
+        $data->error_code = 0;
+        $data->error_message = "";
+        $data->orders = $orders;
+        return $data;
+    }
+
+    public function parsePostMsgToOrderSearch($result, $ackOrdersList)
+    {
+        $output = new  \stdClass;
+        $output->data = $ackOrdersList;
+        $output->message = "feederwork work success"; 
+        $output->result = 1;
+        return $output;
+    }
+
+    public function parsePostMsgToHisOrderSearch($result, $histOrders)
+    {
+        $orders = array();
+        foreach($histOrders as $order)
+        {
+            $data = new \stdClass;
+            $data->activation = 0;
+            $data->close_price = $order['operendprice'];  //平仓之后的价格
+            $data->close_time = strtotime($order['operendtime']);
+            $data->cmd = 0;
+            $data->comment = $order['comment'];
+            $data->commission = 0;
+            $data->commission_agent = 0;
+            $data->conv_rates1 = 1;
+            $data->conv_rates2 = 1;
+            $data->digits = 3;
+            $data->expiration = 0;
+            $data->internal_id = NULL;
+            $data->login = 2089045865;
+            $data->magic = 0;
+            $data->open_price = $order['operstartprice'];
+            $data->open_time = strtotime($order['operstarttime']);
+            $data->order = $order['tradeid'];
+            $data->profit = $order['gainedmoney'];  //?
+            $data->reserved1 = 0;
+            $data->reserved2 = 0;
+            $data->reserved3 = 0;
+            $data->reserved4 = 0;
+            $data->sl = $order['stopgainprice'];
+            $data->spread = NULL;
+            $data->state = 0;  //?
+            $data->storage = 0;   //?
+            $data->symbol = $order['goodname'];
+            $data->taxes = 0; //?
+            $data->timestamp = '1440518737';  //这个地方如何更新
+            $data->tp = $order['stoplossprice'];
+            $data->value_date = NULL; //
+            $data->volume = $order['tradenum']; //
+            $orders[] = $data;
+        }
+        $data = new \stdClass;
+        $data->error_code = $result['error_code'];
+        $data->error_message = $result['error_message'];
+        $data->record_total = $result['record_total'];
+        $data->total_page = $result['total_page'];
+        $data->current_page = $result['current_page'];
+        $data->orders = $orders;
+
+        $output = new  \stdClass;
+        $output->data = $data;
+        $output->message = "feederwork work success";
+        $output->result = 1;
+
+        return $output;
+        
+
+    }
+
+    
+
+    
 }
