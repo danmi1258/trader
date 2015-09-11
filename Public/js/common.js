@@ -39,7 +39,7 @@
     "use strict";
     var r = {};
     var WEBSOCKET_URL='ws://182.92.223.200:443/data/channel';
-    r.bodyMinWidth = 1024, r.mainMinWidth = r.bodyMinWidth - 10, r.symbolPanelMinWidth = 320, r.separatorWidth = 5, r.tabPanelPadding = 12, r.userInfo = "userInfo", r.AuthString = "X-AuthString", r.ApiKey = "X-ApiKey", r.expired = 1800, r.webSocketUrl = WEBSOCKET_URL || "ws://182.92.223.200:443/data/channel", r.typeQuotation = "01", r.typeOrder = "02", r.typeSymbol = "03", r.typeAccount = "04", r.verificationImg = "/api/v1/verification/img?randomKey=", r.request = {
+    r.bodyMinWidth = 1024, r.mainMinWidth = r.bodyMinWidth - 10, r.symbolPanelMinWidth = 320, r.separatorWidth = 5, r.tabPanelPadding = 12, r.userInfo = "userInfo", r.AuthString = "X-AuthString", r.ApiKey = "X-ApiKey", r.expired = 1800, r.webSocketUrl = WEBSOCKET_URL || "ws://182.92.223.200:443/data/channel", r.typeQuotation = "01", r.typeOrder = "02", r.typeSymbol = "03", r.typeAccount = "04", r.verificationImg = "User/verification?randomKey=", r.request = {
         success: 1,
         failed: 0
     }, r.picture = {
@@ -3757,7 +3757,7 @@
     i.auth = function(e) {
         console.log("=====auth===="+e) ;
 
-        return r.doPost("api/auth", {
+        return r.doPost("User/auth", {
             data: JSON.stringify(e),
             ignore: !0
         })
@@ -3774,16 +3774,16 @@
     }, i.getTradeUserInfo = function() {
         return r.doGet("/api/v1/user/info")
     }, i.modifyUserBaseInfo = function(e) {
-        return r.doPost("/api/v1/user/info/update", {
+        return r.doPost("/trader/index.php/Home/User/info_update", {
             data: JSON.stringify(e)
         })
     }, i.modifyPassword = function(e) {
-        return r.doPost("/api/v1/user/password/update", {
+        return r.doPost("/trader/index.php/Home/User/password_update", {
             data: JSON.stringify(e),
             ignore: !0
         })
     }, i.sendCaptcha = function(e) {
-        return r.doPost("/api/v1/user/contact/passcode", {
+        return r.doPost("/trader/index.php/Home/User/user_update_verify", {
             data: JSON.stringify(e),
             ignore: !0
         })
@@ -3803,11 +3803,11 @@
             ignore: !0
         })
     }, i.modifyMail = function(e) {
-        return r.doPost("/api/v1/user/email/update", {
+        return r.doPost("/trader/index.php/Home/User/email_update", {
             data: JSON.stringify(e)
         })
     }, i.modifyPhone = function(e) {
-        return r.doPost("/api/v1/user/phone/update", {
+        return r.doPost("/trader/index.php/Home/User/phone_update", {
             data: JSON.stringify(e)
         })
     }, i.modifyUserAvatar = function(e) {
@@ -3827,12 +3827,12 @@
         var e = "/api/v1/trade/bind-mt4/list";
         return r.doGet(e)
     }, i.getVerification = function(e) {
-        return r.doPost("/api/v1/user/passcode", {
+        return r.doPost("User/passcode", {
             data: JSON.stringify(e),
             ignore: !0
         })
     }, i.register = function(e) {
-        return r.doPost("/api/v1/user/register" + window.location.search, {
+        return r.doPost("User/register" + window.location.search, {
             data: JSON.stringify(e),
             ignore: !0
         })
