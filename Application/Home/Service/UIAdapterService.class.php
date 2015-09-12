@@ -384,11 +384,39 @@ class UIAdapterService extends Model {
         $output->result = 1;
 
         return $output;
-        
-
     }
 
-    
+    public function parseRequestParaToCloseOrder($str)
+    {
+        $order = array();
 
-    
+        $str_begin = strpos($str, '{', 0);
+        $str_end = strpos($str, '}', 0);
+        while($str_end != FALSE)
+        {
+            $order_str = substr($str, $str_begin, $str_end - $str_begin + 1);
+            $order = (array)json_decode($order_str);
+            $orders[] = $order;
+
+            $str_begin = strpos($str, '{', $str_end + 1);
+            $str_end = strpos($str, '}', $str_end + 1);
+        }
+
+        return $orders;
+    }
+
+    public function parsePostMsgToOrderClose($result, $data)
+    {
+        $output = new \StdClass;
+        $output->message = $result['message'];
+        $output->result = $result['result'];
+        if(NULL != $data)
+        {
+            $output->data = $data;
+        }
+        return $output;
+    }
+
+
+
 }

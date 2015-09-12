@@ -81,7 +81,6 @@ class OrderController extends Controller {
 
     	$request_payload = file_get_contents('php://input');
     	$request_para = (array)json_decode($request_payload);
-
         $order_para = $this->uiAdapterSer->parseRequestParaToOpenOrder($request_para);
 
         $request_user = $this->userSer->getUserFromCookie(cookie('userInfo'));
@@ -94,26 +93,19 @@ class OrderController extends Controller {
         }
         /* 判断是否能够开启外汇交易成功：当前用户ID、用户账户余额是否满足要求 */
 
-
         /* 当前的交易时间是否满足外贸交易的时间 */
 
         /* 平仓操作的时候，需要记录盈利情况到DB中 */
 
-
         /* 将符合条件订单信息写入到DB*/
-        $order['tradeid'] = $this->orderSer->getNextOrderId();
-        $order['userid'] = $currentUser['userid'];
-        $order['goodname'] = $order_para->symbol;
-        $order['tradetype'] = $order_para->cmd;  //0 买入 1 卖出 这个地方确定买卖的类型是不是这个字段
-        $order['tradenum'] = $order_para->volume;
-        $order['operstarttime'] = $this->toolkitSer->getSysTime();
-        $order['operstartprice'] = $order_para->price;
-        $order['buyprice'] = $order_para->ask;
-        $order['sellprice'] = $order_para->bid;
-        $order['stoplossprice'] = $order_para->sl;
-        $order['stopgainprice'] = $order_para->tp;
-        $order['comment'] = $order_para->comment;
-        $this->orderSer->addOrder($order);
+        $iret = $this->orderSer->addOrderToTrade($currentUser['userid'], $order_para);
+        if(false == $iret)
+        {
+            $result['message'] = "创建订单流程失败"; $result['result'] = 0;
+            $output = $this->uiAdapterSer->parsePostMsgToOrderOpen($result, NULL);
+            $this->ajaxReturn($output , 'JSON');
+            return;
+        }
 
         $this->logerSer->logInfo("Open order success.");
 
@@ -123,41 +115,62 @@ class OrderController extends Controller {
         return;
     }
 
-    public function parseRequestPara2CloseOrder()
-    {
-        $this->LoggerPrint("starting.");
-        $orderpara = new \stdClass;
-        $orderpara->order = $request_para['order'];
-        $orderpara->symbol = $request_para['symbol'];
-        $orderpara->ask = $request_para['ask'];
-        $orderpara->bid = $request_para['bid'];
-        $orderpara->volume = $request_para['volume'];
-        $orderpara->price = $request_para['price'];
-        $orderpara->openprice = $request_para['openprice'];
-        $orderpara->cmd = $request_para['cmd'];
-        return $orderpara;
-    }
-
+    /****************************************************************
+    函数名：close
+    功能描述：对外接口，订单取消
+    备注: 对外接口  order/close
+    *****************************************************************/
     public function close()
     {
         if(false == IS_POST)
         {
-            //暂时返回页面跳转，最终的时候全部封装成json格式的结构
-            $this->LoggerPrint("Fail Message Type.");
-            $result['message'] = "系统内部错误";
-            $result['result'] = 0;
-            $this->AckPostMsgToOrderClose($result, NULL);
+            $this->logerSer->logError("Message Type failed.");
+            $result['message'] = "消息类型错误"; $result['result'] = 0;
+            $output = $this->uiAdapterSer->parsePostMsgToOrderClose($result, NULL);
+            $this->ajaxReturn($output , 'JSON');
             return;
         }
 
-        //Parse data in web_view to controller.
         $request_payload = file_get_contents('php://input');
-        $request_para = (array)json_decode($request_payload);
+        $request_orders = $this->uiAdapterSer->parseRequestParaToCloseOrder($request_payload);
+        $request_user = $this->userSer->getUserFromCookie(cookie('userInfo'));
+        $isSuccess = true;
+        $errorArray = array();
+        foreach($request_orders as $order)
+        {
+            $errorObj = new \stdClass;
+            $iret = $this->orderSer->closeOrderToOrder($request_user['userid'], $order);
+            if(false == $iret)
+            {
+                $isSuccess = false;
+                $errorObj->error_code = 1;
+                $errorObj->error_message = "RET_ERROR";
+                $errorObj->order = $order['order'];
+            }
+            else
+            {
+                $errorObj->error_code = 0;
+                $errorObj->error_message = "RET_OK";
+                $errorObj->order = $order['order'];
+            }
+            $errorArray[] = $errorObj;
+        }
 
-        $orderpara = $this->parseRequestPara2CloseOrder($request_para);
-        $orderuser = $this->getUserFromCookie(cookie('userInfo'));
+        $this->logerSer->logInfo("Close order end.");
+        if(false == $isSuccess)
+        {
+            $this->logerSer->logError("Close order failed.");
+            $result['message'] = "系统内部错误"; $result['result'] = 0;
+        }
+        else
+        {
+            $this->logerSer->logError("Close order succeed.");
+            $result['message'] = "关闭单成功"; $result['result'] = 1;
+        }
 
-        /*计算盈利情况写入数据库中*/
+        $output = $this->uiAdapterSer->parsePostMsgToOrderClose($result, $errorArray);
+        $this->ajaxReturn($output , 'JSON');
+        return;
     }
 
 
