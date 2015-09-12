@@ -75,7 +75,7 @@ class OrderService extends Model {
             $this->LoggerPrint('execute sql failed.');
             return false;
         }
-        $result = $Model->where("userid=%s and operstarttime > '%s' and operstarttime < '%s' and istrade='%s'", $userid, $fromTime, $toTime, "1")->count();
+        $result = $Model->where("userid=%s and operstarttime > '%s' and operstarttime < '%s' and istrade='%s'", $userid, $fromTime, $toTime, "0")->count();
         return $result;
     }
 
@@ -88,7 +88,7 @@ class OrderService extends Model {
             $this->LoggerPrint('execute sql failed.');
             return false;
         }
-        $result = $Model->where("userid=%s and operstarttime > '%s' and operstarttime < '%s' and istrade='%s'", $userid, $fromTime, $toTime, "1")->limit($rangStart,$rangEnd)->select();
+        $result = $Model->where("userid=%s and operstarttime > '%s' and operstarttime < '%s' and istrade='%s'", $userid, $fromTime, $toTime, "0")->limit($rangStart,$rangEnd)->select();
         return $result;
     }
 
@@ -195,7 +195,7 @@ class OrderService extends Model {
         }
         $Model->create($order);
 
-        $iret =$Model->where('orderid='.$orderId)->save();
+        $iret =$Model->where('tradeid='.$orderId)->save();
         if(false == $iret)
         {
             return false;
@@ -232,6 +232,51 @@ class OrderService extends Model {
             return false;
         }
         $this->delOrderByOrderId($order['order']);
+        return true;
+    }
+
+    public function getTradeOrderByOrderIdAndType($orderId, $orderType)
+    {
+        $Model = D("Order");
+        if(NULL == $Model)
+        {
+            $this->LoggerPrint('execute sql failed.');
+            return false;
+        }
+
+        $result =$Model->fetchSql(false)->where("tradeid=%s and tradetype=%d", $orderId, $orderType)->select();
+        return $result;
+    }
+
+    public function deleteHistOrderByOrderId($orderId)
+    {
+        $Model = D("HistoryOrder");
+        if(NULL == $Model)
+        {
+            $this->LoggerPrint('execute sql failed.');
+            return false;
+        }
+
+        $result =$Model->fetchSql(false)->where("tradeid=%s", $orderId)->delete();
+        return $result;
+    }
+
+    /**
+     * 删除持仓记录
+     * {order: "6636161", symbol: "USDJPY", cmd: 3, volume: "1", price: "120.517"}
+     * @param  [type] $userid [description]
+     * @param  [type] $order  [description]
+     * @return [type]         [description]
+     */
+    public function deleteOrderToOrder($userid, $order)
+    {
+        $tradeOrder = $this->getTradeOrderByOrderIdAndType($order['order'], $order['cmd']);
+        if(NULL == $tradeOrder)
+        {
+            return true;
+        }
+        $this->delOrderByOrderId($order['order']);
+        $this->deleteHistOrderByOrderId($order['order']);
         return true;
     }
 

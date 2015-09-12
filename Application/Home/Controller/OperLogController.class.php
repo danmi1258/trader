@@ -5,101 +5,40 @@ use Think\Log;
 
 class OperLogController extends Controller {
 
-    protected function LoggerPrint($message, $level = 'ERROR')
+
+    private $logerSer;
+    private $userSer;
+    private $uiAdapterSer;
+    private $toolkitSer;
+    private $orderSer;
+
+    public function __construct()
     {
-        Log::write($message, $level);
-        Log::save();
+        parent::__construct();
+        $this->logerSer = D('Log', 'Service');
+        $this->userSer = D('User', 'Service');
+        $this->uiAdapterSer = D('UIAdapter', 'Service');
+        $this->toolkitSer = D('ToolKit', 'Service');
+        $this->orderSer = D('Order', 'Service');
     }
 
-    public function getUserFromCookie($cookie_user)
-    {
-        if(NULL == $cookie_user)
-        {
-            return NULL;
-        }
-        $user =  (array)json_decode($cookie_user);
-        return $user;
-    }
 
-    public function getOperLogCountByUser($userid, $ipKey, $rangStart, $rangEnd)
-    {
-        $Model = D('OperLog');
-
-        if(NULL == $Model)
-        {
-            $this->LoggerPrint('execute sql failed.');
-            return false;
-        }
-        $condition['userid'] = $userid;
-        if($ipKey != NULL and $ipKey != "")
-        {
-            $condition['ipaddr'] = $ipKey;
-        }
-        $result = $Model->where($condition)->limit($rangStart,$rangEnd)->count();
-        return $result;
-    }
-
-    public function  getOperLogForPost($userid, $ipKey, $timeStart, $timeEnd, $rangStart, $rangEnd)
-    {
-        $Model = D('OperLog');
-
-        if(NULL == $Model)
-        {
-            $this->LoggerPrint('execute sql failed.');
-            return false;
-        }
-        $condition['userid'] = $userid;
-        $condition['operdate']  >= $timeStart;
-        $condition['_string']  = "operdate >= '$timeStart' and operdate <= '$timeEnd'";
-        if($ipKey != NULL and $ipKey != "")
-        {
-            $condition['ipaddr'] = $ipKey;
-        }
-        $result =$Model->where($condition)->limit($rangStart,$rangEnd)->select();
-        return $result;
-    }
-
-    public function parseLogsForAck($logs)
-    {
-        $orders = array();
-        foreach($logs as $log)
-        {
-            $data = new \stdClass;
-            $data->bwTenant = NULL;
-            $data->createTime = strtotime($log['operdate']);
-            $data->from = NULL;
-            $data->id = $log['userid'];
-            $data->ip = $log['ipaddr'];
-            $data->key = NULL;
-            $data->log = $log['opercontent'];
-            $data->logType = "";
-            $data->login = "";
-            $data->modifyTime = NULL;
-            $data->offset = 0;
-            $data->pageNo = NULL;
-            $data->pageSize = 20;
-            $data->twTenant = NULL;
-            $data->userId = $log['userid'];
-            $orders[] = $data;
-        }
-        return $orders;
-    }
-
-    //用户注册操作
+    /****************************************************************
+    函数名：search
+    功能描述：对外接口，搜索贸易的信息
+    备注: 对外接口
+    *****************************************************************/
     public function search()
     {
+        if(false == IS_POST)
+        {
+            $this->logerSer->logError("Message Type failed.");
+            $result['message'] = "消息类型错误"; $result['result'] = 0;
+            $output = $this->uiAdapterSer->parsePostMsgToOrderOpen($result, NULL);
+            $this->ajaxReturn($output , 'JSON');
+            return;
+        }
 
-    	if(false == IS_POST)
-    	{
-    	    //暂时返回页面跳转，最终的时候全部封装成json格式的结构
-    	    $this->LoggerPrint("Fail Message Type.");
-            $result['message'] = "系统内部错误";
-            $result['result'] = 0;
-    	    $this->AckPostMsgToRegister($result, NULL);
-    	    return;
-    	}
-
-    	//Parse data in web_view to controller.
     	$request_payload = file_get_contents('php://input');
     	$request_para = (array)json_decode($request_payload);
 
@@ -108,7 +47,7 @@ class OperLogController extends Controller {
         $ipKey = $request_para['key'];
         $pageNo = $request_para['pageNo'];
         $pageSize = 20;
-        $request_user = $this->getUserFromCookie(cookie('userInfo'));
+        $request_user = $this->userSer->getUserFromCookie(cookie('userInfo'));
 
         $totalNum = $this->getOperLogCountByUser($request_user['userId'], $ipKey, $timestart, $timeend);
         $pageNum = (int)($totalNum/$pageSize);
@@ -127,9 +66,10 @@ class OperLogController extends Controller {
             $rangFrom = ($pageNum - 1)*$pageSize;
             $rangEnd = $totalNum;
         }
-        $this->LoggerPrint("PageNo=".$pageNo."rangFrom=".$rangFrom."rangEnd=".$rangEnd);
 
-        $logs = $this->getOperLogForPost($request_user['userId'], $ipKey, $timestart, $timeend, $rangFrom, $rangEnd);
+        $this->logerSer->LogInfo("PageNo=".$pageNo." rangFrom=".$rangFrom." rangEnd=".$rangEnd);
+
+        $logs = $this->getOperLogForSearch($request_user['userId'], $ipKey, $timestart, $timeend, $rangFrom, $rangEnd);
 
         $data = new \stdClass;
         $data->maxPage = $pageNum;
@@ -137,70 +77,27 @@ class OperLogController extends Controller {
         $data->pageSize = 20;
         $data->total = $totalNum;
         $data->twTenant = null;
-
-        $data->list = $this->parseLogsForAck($logs);
-        $result['message'] = null;
-        $result['result'] = 1;
-        $this->AckPostMsgToSearchOperLog($result, $data);
+        $data->list = $this->uiAdapterSer->parseAckLogsToSearch($logs);
+        $result['message'] = null;  $result['result'] = 1;
+        $output = $this->uiAdapterSer->parsePostMsgToSearchOperLog($result, $data);
+        $this->ajaxReturn($output);
         return;
     }
 
-    public function AckPostMsgToSearchOperLog($result, $data)
-    {
-        $output = new \stdClass;
-        $output->data = $data;
-        $output->message = $result['message'];
-        $output->result = $result['result'];
-        $this->ajaxReturn($output);
-
-    }
-
-    public function getSysTime()
-    {
-        date_default_timezone_set('Asia/Chongqing'); //系统时间差8小时问题
-        $date = date("Y/m/d H:i:s");
-        return $date;
-    }
-    public function getNextOperLogId()
-    {
-        $Model = M('OperLog');
-        if(NULL == $Model){
-            $this->LoggerPrint("Create Order Model fail.");
-            return NULL;
-        }
-        $max_tradeId = $Model->fetchSql(false)->max('operid');
-        return ($max_tradeId + 1);
-    }
-
-    public function saveLogToDB($log)
-    {
-        $Model = M('Order');
-        if(NULL == $Model)
-        {
-            $this->LoggerPrint('execute sql failed.');
-            return false;
-        }
-        $Model->create($log);
-
-        $iret =$Model->save();
-        if(false == $iret)
-        {
-            $this->LoggerPrint('execute sql failed.');
-            return false;
-        }
-        $this->LoggerPrint('execute sql succeed.');
-        return true;
-    }
-
+    /****************************************************************
+    函数名：record save
+    功能描述：接口，实现添加订单的
+    备注: 接口  order/open
+    *****************************************************************/
     public function  recordOperLog($userid, $ipaddr, $context)
     {
-        $log['operdate'] = $this->getSysTime();
-        $log['operid'] = $this->getNextOperLogId();
+        $log['operdate'] = $this->uiAdapterSer->getSysTime();
+        $log['operid'] = $this->operlogSer->getNextOperLogId();
         $log['userid'] = $userid;
         $log['ipaddr'] = $ipaddr;
         $log['opercontent'] = $context;
 
-        return $this->saveLogToDB($log);
+        return $this->operlogSer->addOperLog($log);
     }
 
 

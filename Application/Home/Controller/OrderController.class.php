@@ -139,7 +139,7 @@ class OrderController extends Controller {
         foreach($request_orders as $order)
         {
             $errorObj = new \stdClass;
-            $iret = $this->orderSer->closeOrderToOrder($request_user['userid'], $order);
+            $iret = $this->orderSer->closeOrderToOrder($request_user['userId'], $order);
             if(false == $iret)
             {
                 $isSuccess = false;
@@ -192,8 +192,9 @@ class OrderController extends Controller {
         $request_payload = file_get_contents('php://input');
         $request_para = (array)json_decode($request_payload);
 
-        $timestart = $request_para['from'];
-        $timeend = $request_para['to'];
+
+        $timestart = $this->toolkitSer->formatTime($request_para['from']);
+        $timeend = $this->toolkitSer->formatTime($request_para['to']);
 
         $reqUser = $this->userSer->getUserFromCookie(cookie('userInfo'));
 
@@ -226,8 +227,8 @@ class OrderController extends Controller {
         $request_payload = file_get_contents('php://input');
         $request_para = (array)json_decode($request_payload);
 
-        $fromTime = $request_para['from'];
-        $toTime = $request_para['to'];
+        $fromTime = $this->toolkitSer->formatTime($request_para['from']);
+        $toTime = $this->toolkitSer->formatTime($request_para['to']);
         $pageNo = $request_para['pageNo'];
         $pageSize = $request_para['pageSize'];
         $Opercmd = $request_para['cmd'];
@@ -269,5 +270,62 @@ class OrderController extends Controller {
         return;
     }
 
+    /****************************************************************
+    函数名：delete
+    功能描述：挂单的删除，订单取消
+    备注: 对外接口  order/delete
+    *****************************************************************/
+    public function delete()
+    {
+        if(false == IS_POST)
+        {
+            $this->logerSer->logError("Message Type failed.");
+            $result['message'] = "消息类型错误"; $result['result'] = 0;
+            $output = $this->uiAdapterSer->parsePostMsgToOrderClose($result, NULL);
+            $this->ajaxReturn($output , 'JSON');
+            return;
+        }
+
+        $request_payload = file_get_contents('php://input');
+        $request_orders = $this->uiAdapterSer->parseRequestParaToCloseOrder($request_payload);
+        $request_user = $this->userSer->getUserFromCookie(cookie('userInfo'));
+        $isSuccess = true;
+        $errorArray = array();
+        foreach($request_orders as $order)
+        {
+            $errorObj = new \stdClass;
+            $iret = $this->orderSer->deleteOrderToOrder($request_user['userId'], $order);
+            if(false == $iret)
+            {
+                $isSuccess = false;
+                $errorObj->error_code = 1;
+                $errorObj->error_message = "RET_ERROR";
+                $errorObj->order = $order['order'];
+            }
+            else
+            {
+                $errorObj->error_code = 0;
+                $errorObj->error_message = "RET_OK";
+                $errorObj->order = $order['order'];
+            }
+            $errorArray[] = $errorObj;
+        }
+
+        $this->logerSer->logInfo("delete order end.");
+        if(false == $isSuccess)
+        {
+            $this->logerSer->logError("Close order failed.");
+            $result['message'] = "系统内部错误"; $result['result'] = 0;
+        }
+        else
+        {
+            $this->logerSer->logError("Close order succeed.");
+            $result['message'] = "删除单成功"; $result['result'] = 1;
+        }
+
+        $output = $this->uiAdapterSer->parsePostMsgToOrderClose($result, $errorArray);
+        $this->ajaxReturn($output , 'JSON');
+        return;
+    }
 
 }

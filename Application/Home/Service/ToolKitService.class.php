@@ -56,6 +56,13 @@ class ToolKitService extends Model {
         return $date;
     }
 
+    public function formatTime($time)
+    {
+        date_default_timezone_set('Asia/Chongqing'); //系统时间差8小时问题
+        $format_time = date("Y/m/d H:i:s", strtotime($time));
+        return $format_time;
+    }
+
 
 
 

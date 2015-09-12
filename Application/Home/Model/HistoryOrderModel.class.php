@@ -11,7 +11,7 @@ class HistoryOrderModel extends Model {
     protected $fields = array('autotradeid', 'tradeid', 'userid',
 			'goodname', 'tradetype', 'tradenum', 'operstarttime',
             'operendtime', 'operendprice', 'gainedmoney', 'commission',
-			'stoplossprice', 'stopgainprice', 'interest');
+			'stoplossprice', 'stopgainprice', 'interest', 'istrade');
     protected $pk = array('autotradeid');
 
 

@@ -325,7 +325,7 @@ class UIAdapterService extends Model {
     {
         $output = new  \stdClass;
         $output->data = $ackOrdersList;
-        $output->message = "feederwork work success"; 
+        $output->message = "feederwork work success";
         $output->result = 1;
         return $output;
     }
@@ -386,6 +386,13 @@ class UIAdapterService extends Model {
         return $output;
     }
 
+    /**
+     * *转化删除持仓的消息响应
+     * {"order":6688170,"price":6.4457,"volume":40,"symbol":"USDCNH","ask":6.4457,"bid":6.44516,"openPrice":6.44518,"cmd":1}
+     * {order: "6636161", symbol: "USDJPY", cmd: 3, volume: "1", price: "120.517"}
+     * @param  [type] $str [description]
+     * @return [type]      [description]
+     */
     public function parseRequestParaToCloseOrder($str)
     {
         $order = array();
@@ -417,6 +424,44 @@ class UIAdapterService extends Model {
         return $output;
     }
 
+    /******************oper log*****************/
+    public function parseAckLogsToSearch($logs)
+    {
+        $ackLogs = array();
+        foreach($logs as $log)
+        {
+            $data = new \stdClass;
+            $data->bwTenant = NULL;
+            $data->createTime = strtotime($log['operdate']);
+            $data->from = NULL;
+            $data->id = $log['userid'];
+            $data->ip = $log['ipaddr'];
+            $data->key = NULL;
+            $data->log = $log['opercontent'];
+            $data->logType = "";
+            $data->login = "";
+            $data->modifyTime = NULL;
+            $data->offset = 0;
+            $data->pageNo = NULL;
+            $data->pageSize = 20;
+            $data->twTenant = NULL;
+            $data->userId = $log['userid'];
+            $ackLogs[] = $data;
+        }
+        return $ackLogs;
+    }
 
+    public function parsePostMsgToSearchOperLog($result, $data)
+    {
+        $output = new \stdClass;
+        if(NULL != $data)
+        {
+            $output->data = $data;
+        }
+        $output->message = $result['message'];
+        $output->result = $result['result'];
+        return $output;
+
+    }
 
 }
