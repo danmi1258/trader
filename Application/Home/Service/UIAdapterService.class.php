@@ -472,4 +472,92 @@ class UIAdapterService extends Model {
 
     }
 
+    public function parseRequstParaToForgetPasscode($request_para)
+    {
+        $request_obj = new \stdClass;
+        $request_obj->account = $request_para['account'];
+        $request_obj->createTime = NULL;
+        $request_obj->modifyTime = NULL;
+        $request_obj->objectId = "";
+        $request_obj->randomKey = $request_para['randomKey'];
+        $request_obj->twTenant = 0;
+        $request_obj->verification = $request_para['verification'];
+        return $request_obj;
+    }
+
+    public function parseMsgObjToForgetPasscode($result, $data)
+    {
+        $output = new \stdClass;
+        if(NULL != $data)
+        {
+            $output->data = $data;
+        }
+        $output->message = $result['message'];
+        $output->result = $result['result'];
+        return $output;
+    }
+
+    public function parseRequstParaToVerifyForgetPasscode($request_para)
+    {
+        $request_user = new \stdClass;
+        $request_user->account= $request_para['account'];
+        $request_user->articleVisible= NULL;
+        $request_user->bindMail= 0;
+        $request_user->bindOauth= 0;
+        $request_user->bindPhone= 0;
+        $request_user->captcha= $request_para['captcha'];
+        $request_user->createTime= NULL;
+        $request_user->currency= NULL;
+        $request_user->email= NULL;
+        $request_user->enable= NULL;
+        $request_user->expiredAt= NULL;
+        $request_user->introducer= NULL;
+        $request_user->introducerId= NULL;
+        $request_user->introducerIdType= NULL;
+        $request_user->latestLoginTime= NULL;
+        $request_user->locale= NULL;
+        $request_user->modifyTime= NULL;
+        $request_user->nickname= NULL;
+        $request_user->oauthId= NULL;
+        $request_user->oldPassword= NULL;
+        $request_user->password= NULL;
+        $request_user->phone= NULL;
+        $request_user->randomKey= $request_para['randomKey'];
+        $request_user->rePassword= NULL;
+        $request_user->tenantId= $request['tenantId'];
+        $request_user->userAvatar= NULL;
+        $request_user->userId= NULL;
+        $request_user->uuid= NULL;
+        $request_user->verification= $request_para['verification'];
+        $request_user->vip= NULL;
+        return $request_user;
+    }
+
+    public function parseMsgObjToVerifyForgetPasscode($result, $data)
+    {
+        $output = new \stdClass;
+        if(NULL != $data)
+        {
+            $output->data = $data;
+        }
+        $output->message = $result['message'];
+        $output->result = $result['result'];
+        return $output;
+
+    }
+
+    public function parseMsgObjToResetPasscode($result, $data)
+    {
+        $output = new \stdClass;
+        if(NULL != $data)
+        {
+            $output->data = $data;
+        }
+        $output->message = $result['message'];
+        $output->result = $result['result'];
+        return $output;
+
+    }
+
+
 }
