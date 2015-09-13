@@ -11,6 +11,13 @@ class UserService extends Model {
 
     Protected $autoCheckFields = false;
 
+    private $logerSer;
+
+    public function __construct()
+    {
+        parent::__construct();
+        $this->logerSer = D('Log', 'Service');
+    }
 
     /*********************************************************************
     function:JudgeAccountType 判读account的类型
@@ -35,7 +42,7 @@ class UserService extends Model {
     {
         $Model = D('User');
         if(NULL == $Model){
-            $this->LoggerPrint("Create User Model fail.");
+            $this->logerSer->logError("Create User Model fail.");
             return NULL;
         }
         if ($authType == "phone"){
@@ -55,6 +62,7 @@ class UserService extends Model {
 
         $Model = D('User');
         if(NULL == $Model){
+            $this->logerSer->logError("Create User Model fail.");
             return false;
         }
 
@@ -68,7 +76,7 @@ class UserService extends Model {
         {
             return true;
         }else{
-            $this->LoggerPrint($Model->getError());
+            $this->logerSer->logError($Model->getError());
             return false;
         }
     }
@@ -87,13 +95,13 @@ class UserService extends Model {
     {
         if(NULL == $userid)
         {
-            $this->LOggerPrint("getUserFromDBByUserId: userid is null");
+            $this->logerSer->logError("getUserFromDBByUserId: userid is null");
             return NULL;
         }
 
         $Model = M('User');
         if(NULL == $Model){
-            $this->LoggerPrint("Create User Model fail.");
+            $this->logerSer->logError("Create User Model fail.");
             return NULL;
         }
         $data = $Model->fetchSql(false)->where('userid="'.$userid.'"')->find();
@@ -107,7 +115,7 @@ class UserService extends Model {
 
         if(NULL == $Model)
         {
-            $this->LoggerPrint('execute sql failed.');
+            $this->logerSer->logError("Execute sql failed.");
             return false;
         }
         $Model->create($data);
@@ -115,6 +123,7 @@ class UserService extends Model {
         $iret =$Model->where('autouserid='.$data['autouserid'])->save();
         if(false == $iret)
         {
+            $this->logerSer->logError("update user info failed.");
             return false;
         }
         return true;
@@ -127,6 +136,7 @@ class UserService extends Model {
         $User = D('User');
         $data = $User->where('petname='.$petname)->find();
         if(NULL == $data){
+             $this->logerSer->logError("The user is not exist.");
             return false;
         }else{
             return true;
@@ -138,6 +148,7 @@ class UserService extends Model {
         $User = D('User');
         $data = $User->where('userid='.$userid)->find();
         if(NULL == $data){
+            $this->logerSer->logError("The user is not exist.");
             return false;
         }else{
             return true;

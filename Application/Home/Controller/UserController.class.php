@@ -109,6 +109,9 @@ class UserController extends Controller {
             return;
     	}
 
+        $registeruser['userId'] = $user['userid'];
+        $registeruser['userAvatar'] = $user['userAvatar'];
+
         $this->logerSer->logError("Register succeed.");
         $result['message'] = "注册成功"; $result['result'] = 1;
         $output = $this->uiAdapterSer->parsePostMsgToReg($result, $registeruser);
@@ -242,6 +245,10 @@ class UserController extends Controller {
     	    {
                 $this->logerSer->logError("Send AuthNum To User failed.");
     	    }
+            else
+            {
+                $this->logerSer->logError("Send AuthNum To User succeed.");
+            }
 
     	    $iret = $this->userSer->addNewUser($newuser);
     	    if($iret == false)

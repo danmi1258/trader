@@ -11,6 +11,14 @@ class ToolKitService extends Model {
 
     Protected $autoCheckFields = false;
 
+    private $logerSer;
+
+    public function __construct()
+    {
+        parent::__construct();
+        $this->logerSer = D('Log', 'Service');
+    }
+
     public function sendMessageByPhone($phone, $passcode)
     {
         //发送消息到手机
@@ -20,20 +28,21 @@ class ToolKitService extends Model {
     public function sendMessageByEmail($email, $passcode)
     {
         //发送消息给到邮箱
-        return true;
+        $content="尊敬的用户，您正在申请对外汇平台账号进行操作，操作验证码为:".$passcode;
+        $subject = "外汇交易平台校验码测试";
+        return sendMail($email, $subject, $content);
     }
 
     public function SendAuthNumToUser($authtype, $account, $authnum)
     {
         if($authtype == "phone")
         {
-            $this->sendMessageByPhone($account, $authnum);
+            return $this->sendMessageByPhone($account, $authnum);
         }else if ($authtype  == "email")
         {
-            $this->sendMessageByEmail($account, $authnum);
+            return $this->sendMessageByEmail($account, $authnum);
         }
 
-        return true;
     }
 
 

@@ -11,6 +11,14 @@ class UIAdapterService extends Model {
 
     Protected $autoCheckFields = false;
 
+    private $logerSer;
+
+    public function __construct()
+    {
+        parent::__construct();
+        $this->logerSer = D('Log', 'Service');
+    }
+
     /******************usr/auth******************************/
     public function parseRequestPara2Auth($request_para)
     {

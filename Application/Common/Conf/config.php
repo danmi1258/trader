@@ -16,4 +16,16 @@ return array(
     'LOG_RECORD' => true,
     'LOG_LEVEL'  =>'EMERG,ALERT,CRIT,ERR,INFO,DEBUG,SQL',
     'LOG_TYPE'              =>  'File',
+	
+	// 配置邮件发送服务器
+    'MAIL_SMTP'                     =>TRUE,
+    'MAIL_HOST'                     =>'smtp.qq.com',
+    'MAIL_SMTPAUTH'                 =>TRUE,
+    'MAIL_USERNAME'                 =>'875161027@qq.com',
+    'MAIL_PASSWORD'                 =>'HzcloveWxt130506',
+    'MAIL_SECURE'                   =>'tls',
+    'MAIL_CHARSET'                  =>'utf-8',
+    'MAIL_ISHTML'                   =>TRUE,
+	'MAIL_FROMNAME'					=>'trader外汇贸易',
+	
 );

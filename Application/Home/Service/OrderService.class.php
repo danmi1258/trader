@@ -39,7 +39,7 @@ class OrderService extends Model {
 
         if(NULL == $Model)
         {
-            $this->LoggerPrint('execute sql failed.');
+            $this->logerSer->logError("Execute sql failed.");
             return false;
         }
 
@@ -47,7 +47,7 @@ class OrderService extends Model {
         $iret =$Model->add($order);
         if(false == $iret)
         {
-            $this->LoggerPrint('execute sql failed.');
+            $this->logerSer->logError("Execute sql failed.");
             return false;
         }
         return true;
@@ -58,11 +58,10 @@ class OrderService extends Model {
         $Model = D("Order");
         if(NULL == $Model)
         {
-            $this->LoggerPrint('execute sql failed.');
+            $this->logerSer->logError("Execute sql failed.");
             return false;
         }
-        //$this->LoggerPrint("userid:". $userid. "timestart:". $timestart. "timeend". $timeend);
-        $result =$Model->fetchSql(false)->where("operstarttime >= '%s' and operstarttime <= '%s' and userid=%s", $timestart, $timeend, $userid)->select();
+        $result =$Model->fetchSql(false)->where("operstarttime >= '%s' and operstarttime <= '%s' and userid='%s'", $timestart, $timeend, $userid)->select();
         return $result;
     }
 
@@ -72,10 +71,10 @@ class OrderService extends Model {
 
         if(NULL == $Model)
         {
-            $this->LoggerPrint('execute sql failed.');
+            $this->logerSer->logError("Execute sql failed.");
             return false;
         }
-        $result = $Model->where("userid=%s and operstarttime > '%s' and operstarttime < '%s' and istrade='%s'", $userid, $fromTime, $toTime, "0")->count();
+        $result = $Model->where("userid='%s' and operstarttime > '%s' and operstarttime < '%s' and istrade='%s'", $userid, $fromTime, $toTime, "0")->count();
         return $result;
     }
 
@@ -85,10 +84,10 @@ class OrderService extends Model {
 
         if(NULL == $Model)
         {
-            $this->LoggerPrint('execute sql failed.');
+            $this->logerSer->logError("Execute sql failed.");
             return false;
         }
-        $result = $Model->where("userid=%s and operstarttime > '%s' and operstarttime < '%s' and istrade='%s'", $userid, $fromTime, $toTime, "0")->limit($rangStart,$rangEnd)->select();
+        $result = $Model->where("userid='%s' and operstarttime > '%s' and operstarttime < '%s' and istrade='%s'", $userid, $fromTime, $toTime, "0")->limit($rangStart,$rangEnd)->select();
         return $result;
     }
 
@@ -97,7 +96,7 @@ class OrderService extends Model {
         $Model = D("Order");
         if(NULL == $Model)
         {
-            $this->LoggerPrint('execute sql failed.');
+            $this->logerSer->logError("Execute sql failed.");
             return false;
         }
 
@@ -123,6 +122,7 @@ class OrderService extends Model {
         $iret = $this->addOrder($order);
         if(false == $iret)
         {
+            $this->logerSer->logError("Add order to tbl_trade failed.");
             return NULL;
         }
 
@@ -140,6 +140,7 @@ class OrderService extends Model {
         $iret = $this->addHistOrder($histOrder);
         if(false == $iret)
         {
+            $this->logerSer->logError("Add order to tbl_histtrade failed.");
             return NULL;
         }
         return $order;
@@ -152,14 +153,14 @@ class OrderService extends Model {
 
         if(NULL == $Model)
         {
-            $this->LoggerPrint('execute sql failed.');
+            $this->logerSer->logError("Execute sql failed.");
             return false;
         }
 
         $iret =$Model->add($order);
         if(false == $iret)
         {
-            $this->LoggerPrint('execute sql failed.');
+            $this->logerSer->logError("Add order to hist trade failed.");
             return false;
         }
         return true;
@@ -170,7 +171,7 @@ class OrderService extends Model {
         $Model = D("HistoryOrder");
         if(NULL == $Model)
         {
-            $this->LoggerPrint('execute sql failed.');
+            $this->logerSer->logError("Execute sql failed.");
             return false;
         }
 
@@ -183,7 +184,7 @@ class OrderService extends Model {
         $Model = D("Order");
         if(NULL == $Model)
         {
-            $this->LoggerPrint('execute sql failed.');
+            $this->logerSer->logError("Execute sql failed.");
             return false;
         }
 
@@ -197,7 +198,7 @@ class OrderService extends Model {
 
         if(NULL == $Model)
         {
-            $this->LoggerPrint('execute sql failed.');
+            $this->logerSer->logError("Execute sql failed.");
             return false;
         }
         $Model->create($order);
@@ -236,6 +237,7 @@ class OrderService extends Model {
         $iret = $this->updateHistOrderByOrderId($order['order'], $histOrder);
         if(false == $iret)
         {
+            $this->logerSer->logError("Update history trade failed.");
             return false;
         }
         $this->delOrderByOrderId($order['order']);
@@ -247,7 +249,7 @@ class OrderService extends Model {
         $Model = D("Order");
         if(NULL == $Model)
         {
-            $this->LoggerPrint('execute sql failed.');
+            $this->logerSer->logError("Execute sql failed.");
             return false;
         }
 
@@ -260,7 +262,7 @@ class OrderService extends Model {
         $Model = D("HistoryOrder");
         if(NULL == $Model)
         {
-            $this->LoggerPrint('execute sql failed.');
+            $this->logerSer->logError("Execute sql failed.");
             return false;
         }
 
@@ -280,6 +282,7 @@ class OrderService extends Model {
         $tradeOrder = $this->getTradeOrderByOrderIdAndType($order['order'], $order['cmd']);
         if(NULL == $tradeOrder)
         {
+            $this->logerSer->logError("Execute get trade info by id and type failed.");
             return true;
         }
         $this->delOrderByOrderId($order['order']);

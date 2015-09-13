@@ -32,7 +32,7 @@ class OperLogService extends Model {
 
         if(NULL == $Model)
         {
-            $this->LoggerPrint('execute sql failed.');
+             $this->logerSer->logError("Execute sql failed.");
             return false;
         }
         $condition['userid'] = $userid;
@@ -50,7 +50,7 @@ class OperLogService extends Model {
 
         if(NULL == $Model)
         {
-            $this->LoggerPrint('execute sql failed.');
+            $this->logerSer->logError("Execute sql failed.");
             return false;
         }
         $condition['userid'] = $userid;
@@ -68,7 +68,7 @@ class OperLogService extends Model {
     {
         $Model = D('OperLog');
         if(NULL == $Model){
-            $this->LoggerPrint("Create Order Model fail.");
+            $this->logerSer->logError("Execute sql failed.");
             return NULL;
         }
         $max_tradeId = $Model->fetchSql(false)->max('operid');
@@ -80,14 +80,14 @@ class OperLogService extends Model {
         $Model = D('OperLog');
         if(NULL == $Model)
         {
-            $this->LoggerPrint('execute sql failed.');
+            $this->logerSer->logError("Execute sql failed.");
             return false;
         }
 
         $iret =$Model->add($log);
         if(false == $iret)
         {
-            $this->LoggerPrint('execute sql failed.');
+            $this->logerSer->logError("Execute sql failed.");
             return false;
         }
         return true;
