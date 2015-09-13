@@ -63,6 +63,20 @@ class ToolKitService extends Model {
         return $format_time;
     }
 
+    public function getClientIP()
+    {
+        /*
+        $ip = $_server['remote_addr'];
+        if (!empty($_server['http_client_ip'])) {
+            $ip = $_server['http_client_ip'];
+        } elseif (!empty($_server['http_x_forwarded_for']))
+        {
+            $ip = $_server['http_x_forwarded_for'];
+        }
+        */
+       $ip = "127.0.0.1";
+        return $ip;
+    }
 
 
 

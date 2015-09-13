@@ -120,7 +120,11 @@ class OrderService extends Model {
         $order['stoplossprice'] = $order_para->sl;
         $order['stopgainprice'] = $order_para->tp;
         $order['comment'] = $order_para->comment;
-        $this->addOrder($order);
+        $iret = $this->addOrder($order);
+        if(false == $iret)
+        {
+            return NULL;
+        }
 
         $histOrder['tradeid'] = $order['tradeid'] ;
         $histOrders['userid'] = $userId;
@@ -133,9 +137,12 @@ class OrderService extends Model {
         $histOrder['stopgainprice'] = $order_para->tp;
         $histOrder['comment'] = $order_para->comment;
         $histOrder['istrade'] = "0";
-        $this->addHistOrder($histOrder);
-
-        return true;
+        $iret = $this->addHistOrder($histOrder);
+        if(false == $iret)
+        {
+            return NULL;
+        }
+        return $order;
     }
 
 
@@ -279,5 +286,7 @@ class OrderService extends Model {
         $this->deleteHistOrderByOrderId($order['order']);
         return true;
     }
+
+
 
 }

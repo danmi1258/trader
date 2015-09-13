@@ -13,6 +13,19 @@ class OperLogService extends Model {
 
     Protected $autoCheckFields = false;
 
+    private $logerSer;
+    private $userSer;
+    private $toolkitSer;
+
+
+    public function __construct()
+    {
+        parent::__construct();
+        $this->logerSer = D('Log', 'Service');
+        $this->userSer = D('User', 'Service');
+        $this->toolkitSer = D('ToolKit', 'Service');
+    }
+
     public function getOperLogCountByUser($userid, $ipKey, $rangStart, $rangEnd)
     {
         $Model = D('OperLog');
@@ -53,7 +66,7 @@ class OperLogService extends Model {
 
     public function getNextOperLogId()
     {
-        $Model = M('OperLog');
+        $Model = D('OperLog');
         if(NULL == $Model){
             $this->LoggerPrint("Create Order Model fail.");
             return NULL;
@@ -64,21 +77,36 @@ class OperLogService extends Model {
 
     public function addOperLog($log)
     {
-        $Model = M('Order');
+        $Model = D('OperLog');
         if(NULL == $Model)
         {
             $this->LoggerPrint('execute sql failed.');
             return false;
         }
-        $Model->create($log);
 
-        $iret =$Model->save();
+        $iret =$Model->add($log);
         if(false == $iret)
         {
             $this->LoggerPrint('execute sql failed.');
             return false;
         }
         return true;
+    }
+
+    /****************************************************************
+    函数名：record save
+    功能描述：接口，实现添加订单的
+    备注: 接口  order/open
+    *****************************************************************/
+    public function  recordOperLog($userid, $ipaddr, $context)
+    {
+        $log['operdate'] = $this->toolkitSer->getSysTime();
+        $log['operid'] = $this->getNextOperLogId();
+        $log['userid'] = $userid;
+        $log['ipaddr'] = $ipaddr;
+        $log['opercontent'] = $context;
+
+        return $this->addOperLog($log);
     }
 
 

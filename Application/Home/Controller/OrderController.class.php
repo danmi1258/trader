@@ -12,6 +12,7 @@ class OrderController extends Controller {
     private $uiAdapterSer;
     private $toolkitSer;
     private $orderSer;
+    private $operLogSer;
 
     public function __construct()
     {
@@ -22,6 +23,7 @@ class OrderController extends Controller {
         $this->uiAdapterSer = D('UIAdapter', 'Service');
         $this->toolkitSer = D('ToolKit', 'Service');
         $this->orderSer = D('Order', 'Service');
+        $this->operLogSer = D('OperLog', 'Service');
     }
 
 
@@ -30,35 +32,6 @@ class OrderController extends Controller {
     {
         Log::write($message, $level);
         Log::save();
-    }
-
-    //这个函数以后放入Util函数中
-    public function getUserFromCookie($cookie_user)
-    {
-        if(NULL == $cookie_user)
-        {
-            return NULL;
-        }
-        $user =  (array)json_decode($cookie_user);
-        return $user;
-    }
-
-    //该函数以后放入UserModel的内里面
-    public  function getUserFromDBByUserId($userid)
-    {
-        if(NULL == $userid)
-        {
-            $this->LOggerPrint("getUserFromDBByUserId: userid is null");
-            return NULL;
-        }
-
-        $Model = M('User');
-        if(NULL == $Model){
-            $this->LoggerPrint("Create User Model fail.");
-            return NULL;
-        }
-        $data = $Model->fetchSql(false)->where('userid="'.$userid.'"')->find();
-        return $data;
     }
 
 
@@ -80,6 +53,7 @@ class OrderController extends Controller {
         }
 
     	$request_payload = file_get_contents('php://input');
+        $request_ip = $this->toolkitSer->getClientIP();
     	$request_para = (array)json_decode($request_payload);
         $order_para = $this->uiAdapterSer->parseRequestParaToOpenOrder($request_para);
 
@@ -98,8 +72,8 @@ class OrderController extends Controller {
         /* 平仓操作的时候，需要记录盈利情况到DB中 */
 
         /* 将符合条件订单信息写入到DB*/
-        $iret = $this->orderSer->addOrderToTrade($currentUser['userid'], $order_para);
-        if(false == $iret)
+        $order = $this->orderSer->addOrderToTrade($currentUser['userid'], $order_para);
+        if(NULL == $order)
         {
             $result['message'] = "创建订单流程失败"; $result['result'] = 0;
             $output = $this->uiAdapterSer->parsePostMsgToOrderOpen($result, NULL);
@@ -108,6 +82,8 @@ class OrderController extends Controller {
         }
 
         $this->logerSer->logInfo("Open order success.");
+        $operLog = sprintf("order #%d open(%d) %s in price %s.", $order['tradeid'], $order['tradetype'], $order['goodname'], $order['operstartprice']);
+        $this->operLogSer->recordOperLog($request_user['userId'], $request_ip, $operLog);
 
         $result['message'] = "RET_OK"; $result['result'] = 1;
         $output = $this->uiAdapterSer->parsePostMsgToOrderOpen($result, $order);
@@ -132,6 +108,7 @@ class OrderController extends Controller {
         }
 
         $request_payload = file_get_contents('php://input');
+        $request_ip = $this->toolkitSer->getClientIP();
         $request_orders = $this->uiAdapterSer->parseRequestParaToCloseOrder($request_payload);
         $request_user = $this->userSer->getUserFromCookie(cookie('userInfo'));
         $isSuccess = true;
@@ -152,6 +129,8 @@ class OrderController extends Controller {
                 $errorObj->error_code = 0;
                 $errorObj->error_message = "RET_OK";
                 $errorObj->order = $order['order'];
+                $operLog = sprintf("order #%d close %s in price %s.", $order['order'], $order['symbol'], $order['price']);
+                $this->operLogSer->recordOperLog($request_user['userId'], $request_ip, $operLog);
             }
             $errorArray[] = $errorObj;
         }
@@ -287,6 +266,7 @@ class OrderController extends Controller {
         }
 
         $request_payload = file_get_contents('php://input');
+        $request_ip = $this->toolkitSer->getClientIP();
         $request_orders = $this->uiAdapterSer->parseRequestParaToCloseOrder($request_payload);
         $request_user = $this->userSer->getUserFromCookie(cookie('userInfo'));
         $isSuccess = true;
@@ -307,19 +287,21 @@ class OrderController extends Controller {
                 $errorObj->error_code = 0;
                 $errorObj->error_message = "RET_OK";
                 $errorObj->order = $order['order'];
+                $operLog = sprintf("order #%d  %s delete.", $order['order'], $order['symbol']);
+                $this->operLogSer->recordOperLog($request_user['userId'], $request_ip, $operLog);
             }
             $errorArray[] = $errorObj;
         }
 
-        $this->logerSer->logInfo("delete order end.");
+        $this->logerSer->logInfo("Delete order end.");
         if(false == $isSuccess)
         {
-            $this->logerSer->logError("Close order failed.");
+            $this->logerSer->logError("Delete order failed.");
             $result['message'] = "系统内部错误"; $result['result'] = 0;
         }
         else
         {
-            $this->logerSer->logError("Close order succeed.");
+            $this->logerSer->logError("Delete order succeed.");
             $result['message'] = "删除单成功"; $result['result'] = 1;
         }
 

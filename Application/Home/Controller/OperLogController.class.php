@@ -11,6 +11,7 @@ class OperLogController extends Controller {
     private $uiAdapterSer;
     private $toolkitSer;
     private $orderSer;
+    private $operLogSer;
 
     public function __construct()
     {
@@ -20,15 +21,16 @@ class OperLogController extends Controller {
         $this->uiAdapterSer = D('UIAdapter', 'Service');
         $this->toolkitSer = D('ToolKit', 'Service');
         $this->orderSer = D('Order', 'Service');
+        $this->operLogSer = D('OperLog', 'Service');
     }
 
 
     /****************************************************************
     函数名：search
     功能描述：对外接口，搜索贸易的信息
-    备注: 对外接口
+    备注: 对外接口  operlog/trade_logs_search
     *****************************************************************/
-    public function search()
+    public function trade_logs_search()
     {
         if(false == IS_POST)
         {
@@ -49,7 +51,7 @@ class OperLogController extends Controller {
         $pageSize = 20;
         $request_user = $this->userSer->getUserFromCookie(cookie('userInfo'));
 
-        $totalNum = $this->getOperLogCountByUser($request_user['userId'], $ipKey, $timestart, $timeend);
+        $totalNum = $this->operLogSer->getOperLogCountByUser($request_user['userId'], $ipKey, $timestart, $timeend);
         $pageNum = (int)($totalNum/$pageSize);
         if(($totalNum - $pageSize*$pageNum) > 0)
         {
@@ -69,7 +71,7 @@ class OperLogController extends Controller {
 
         $this->logerSer->LogInfo("PageNo=".$pageNo." rangFrom=".$rangFrom." rangEnd=".$rangEnd);
 
-        $logs = $this->getOperLogForSearch($request_user['userId'], $ipKey, $timestart, $timeend, $rangFrom, $rangEnd);
+        $logs = $this->operLogSer->getOperLogForSearch($request_user['userId'], $ipKey, $timestart, $timeend, $rangFrom, $rangEnd);
 
         $data = new \stdClass;
         $data->maxPage = $pageNum;
@@ -84,21 +86,6 @@ class OperLogController extends Controller {
         return;
     }
 
-    /****************************************************************
-    函数名：record save
-    功能描述：接口，实现添加订单的
-    备注: 接口  order/open
-    *****************************************************************/
-    public function  recordOperLog($userid, $ipaddr, $context)
-    {
-        $log['operdate'] = $this->uiAdapterSer->getSysTime();
-        $log['operid'] = $this->operlogSer->getNextOperLogId();
-        $log['userid'] = $userid;
-        $log['ipaddr'] = $ipaddr;
-        $log['opercontent'] = $context;
-
-        return $this->operlogSer->addOperLog($log);
-    }
 
 
 

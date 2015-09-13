@@ -116,18 +116,6 @@ class UserController extends Controller {
         return;
     }
 
-    protected function getClientIP()
-    {
-        $ip = $_server['remote_addr'];
-        if (!empty($_server['http_client_ip'])) {
-            $ip = $_server['http_client_ip'];
-        } elseif (!empty($_server['http_x_forwarded_for']))
-        {
-            $ip = $_server['http_x_forwarded_for'];
-        }
-        return $ip;
-    }
-
     /****************************************************************
     函数名：auth
     功能描述：用户鉴权登陆处理函数 
