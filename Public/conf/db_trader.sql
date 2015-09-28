@@ -19,6 +19,31 @@ CREATE DATABASE `db_trader` /*!40100 DEFAULT CHARACTER SET utf8 */;
 USE `db_trader`;
 
 #
+# Source for table tbl_company
+#
+
+DROP TABLE IF EXISTS `tbl_company`;
+CREATE TABLE `tbl_company` (
+  `autocompanyid` int(11) NOT NULL AUTO_INCREMENT,
+  `companyid` varchar(255) DEFAULT NULL,
+  `certificate` varchar(255) DEFAULT NULL,
+  `rechargemodel` varchar(255) DEFAULT NULL,
+  `rechargeurl` varchar(255) DEFAULT NULL,
+  `backurl` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`autocompanyid`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+
+#
+# Dumping data for table tbl_company
+#
+
+LOCK TABLES `tbl_company` WRITE;
+/*!40000 ALTER TABLE `tbl_company` DISABLE KEYS */;
+INSERT INTO `tbl_company` VALUES (1,'000015','GDgLwwdK270Qj1w4xho8lyTpRQZV9Jm5x4NwWOTThUa4fMhEBK9jOXFrKRT6xhlJuU2FEa89ov0ryyjfJuuPkcGzO5CeVx5ZIrkkt1aBlZV36ySvHOMcNv8rncRiy3DQ','0','https://pay.ips.net.cn/ipayment.aspx','http://127.0.0.1:8087/pay/index.php/Home/Recharge/redirect_callback');
+/*!40000 ALTER TABLE `tbl_company` ENABLE KEYS */;
+UNLOCK TABLES;
+
+#
 # Source for table tbl_good
 #
 
@@ -61,8 +86,9 @@ CREATE TABLE `tbl_historytrade` (
   `commission` double DEFAULT NULL,
   `interest` double DEFAULT NULL,
   `comment` varchar(255) DEFAULT NULL,
+  `istrade` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`autotradeid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=59 DEFAULT CHARSET=utf8;
 
 #
 # Dumping data for table tbl_historytrade
@@ -124,8 +150,6 @@ CREATE TABLE `tbl_openbarn` (
 
 LOCK TABLES `tbl_openbarn` WRITE;
 /*!40000 ALTER TABLE `tbl_openbarn` DISABLE KEYS */;
-INSERT INTO `tbl_openbarn` VALUES (1,6636156,'112','USOUSD',0,10,'2017-08-21 21:42:54',42.935,NULL,NULL,0,0,'');
-INSERT INTO `tbl_openbarn` VALUES (2,6636157,'112','USDCNH',1,10,'2017-08-22 21:42:54',42.935,NULL,NULL,0,0,'\"\"');
 /*!40000 ALTER TABLE `tbl_openbarn` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -142,7 +166,7 @@ CREATE TABLE `tbl_oper` (
   `ipaddr` varchar(11) DEFAULT NULL,
   `opercontent` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`autoperid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=40 DEFAULT CHARSET=utf8;
 
 #
 # Dumping data for table tbl_oper
@@ -182,6 +206,33 @@ LOCK TABLES `tbl_pendorder` WRITE;
 UNLOCK TABLES;
 
 #
+# Source for table tbl_recharge
+#
+
+DROP TABLE IF EXISTS `tbl_recharge`;
+CREATE TABLE `tbl_recharge` (
+  `autooperid` int(11) NOT NULL AUTO_INCREMENT,
+  `rechargeid` varchar(255) DEFAULT NULL,
+  `userid` varchar(255) DEFAULT NULL,
+  `rechargedate` varchar(255) DEFAULT NULL,
+  `rechargetype` varchar(255) DEFAULT NULL,
+  `currency` varchar(255) DEFAULT NULL,
+  `amount` varchar(255) DEFAULT NULL,
+  `status` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`autooperid`)
+) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8;
+
+#
+# Dumping data for table tbl_recharge
+#
+
+LOCK TABLES `tbl_recharge` WRITE;
+/*!40000 ALTER TABLE `tbl_recharge` DISABLE KEYS */;
+INSERT INTO `tbl_recharge` VALUES (25,'20150929001915590239','1','20150929','01','RMB','102.02','succeed');
+/*!40000 ALTER TABLE `tbl_recharge` ENABLE KEYS */;
+UNLOCK TABLES;
+
+#
 # Source for table tbl_trade
 #
 
@@ -207,7 +258,7 @@ CREATE TABLE `tbl_trade` (
   `deadline` varchar(255) DEFAULT NULL,
   `comments` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`autotradeid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
 
 #
 # Dumping data for table tbl_trade
@@ -247,8 +298,9 @@ CREATE TABLE `tbl_user` (
   `reemailchecksum` varchar(255) DEFAULT NULL,
   `rephone` varchar(255) DEFAULT NULL,
   `rephonechecksum` varchar(255) DEFAULT NULL,
+  `repasswordchecksum` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`autouserid`)
-) ENGINE=InnoDB AUTO_INCREMENT=35 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8;
 
 #
 # Dumping data for table tbl_user
@@ -256,7 +308,7 @@ CREATE TABLE `tbl_user` (
 
 LOCK TABLES `tbl_user` WRITE;
 /*!40000 ALTER TABLE `tbl_user` DISABLE KEYS */;
-INSERT INTO `tbl_user` VALUES (29,'112','admin','123456@qq.com','admin','admin123',NULL,NULL,NULL,NULL,NULL,'15312121212','',NULL,'1',NULL,NULL,'ush9','http://localhost:8087/trader/Public/userAvatar/112.jpg','','','','');
+INSERT INTO `tbl_user` VALUES (30,'1',NULL,'875161027@qq.com','hzc1','Wxt130506',NULL,NULL,NULL,NULL,NULL,NULL,'',NULL,'1','200',1202.04,'83zh','http://localhost:8087/trader/Public/userAvatar/1.jpg',NULL,NULL,NULL,NULL,NULL);
 /*!40000 ALTER TABLE `tbl_user` ENABLE KEYS */;
 UNLOCK TABLES;
 
