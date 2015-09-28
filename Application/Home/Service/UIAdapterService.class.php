@@ -268,7 +268,7 @@ class UIAdapterService extends Model {
         $orderpara->comment = $request_para['comment'];
         $orderpara->price = $request_para['price'];
         $orderpara->cmd = $request_para['cmd'];
-        $orderpara->expiration =  $request_para['expiration'];
+        $orderpara->expiration =  NULL;
 
         $orderpara->closeCount = NULL;
         $orderpara->login = NULL;
@@ -277,6 +277,7 @@ class UIAdapterService extends Model {
         $orderpara->openPrice = NULL;
         $orderpara->operation = NULL;
         $orderpara->order = NULL;
+        $this->logerSer->logInfo("helo".$request_para['price']);
         return $orderpara;
     }
 

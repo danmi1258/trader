@@ -126,8 +126,10 @@ class OrderService extends Model {
             return NULL;
         }
 
+        $histOrder = array();
+
         $histOrder['tradeid'] = $order['tradeid'] ;
-        $histOrders['userid'] = $userId;
+        $histOrder['userid'] = $userId;
         $histOrder['goodname'] = $order_para->symbol;
         $histOrder['tradetype'] = $order_para->cmd;  //0 买入 1 卖出
         $histOrder['tradenum'] = $order_para->volume;
@@ -136,7 +138,7 @@ class OrderService extends Model {
         $histOrder['stoplossprice'] = $order_para->sl;
         $histOrder['stopgainprice'] = $order_para->tp;
         $histOrder['comment'] = $order_para->comment;
-        $histOrder['istrade'] = "0";
+        $histOrder['istrade'] = "1";
         $iret = $this->addHistOrder($histOrder);
         if(false == $iret)
         {

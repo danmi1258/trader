@@ -55,6 +55,15 @@ class UserService extends Model {
         return NULL;
     }
 
+    public function getNextUserId()
+    {
+        $Model = D('User');
+        if(NULL == $Model){
+            return NULL;
+        }
+        $max_tradeId = $Model->fetchSql(false)->max('userid');
+        return ($max_tradeId + 1);
+    }
 
 
     public function addNewUser($data)
@@ -70,6 +79,7 @@ class UserService extends Model {
         $user['email'] = is_null($data['email'])? "" : $data['email'];
         $user['authnum'] = $data['authnum'];
         $user['ischeck'] = $data['ischeck'];
+        $user['userid'] = $this->getNextUserId();
 
         $result = $Model->add($user);
         if($result)

@@ -77,7 +77,7 @@ class UserController extends Controller {
     	{
     	    //用户已经注册成功
             $this->logerSer->logError("The User is aleady exist.");
-            $result['message'] = "验证码错误";   $result['result'] = 0;
+            $result['message'] = "用户已经注册成功，请直接登录。";   $result['result'] = 0;
             $output = $this->uiAdapterSer->parsePostMsgToReg($result, $registeruser);
             $this->ajaxReturn($output , 'JSON');
             return;
@@ -110,8 +110,8 @@ class UserController extends Controller {
             return;
     	}
 
-        $registeruser['userId'] = $user['userid'];
-        $registeruser['userAvatar'] = $user['userAvatar'];
+        $registeruser->userId = $user['userid'];
+        $registeruser->userAvatar = $user['userAvatar'];
 
         $this->logerSer->logError("Register succeed.");
         $result['message'] = "注册成功"; $result['result'] = 1;
