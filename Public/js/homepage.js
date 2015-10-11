@@ -163,6 +163,10 @@ webpackJsonp([4], [function(e, t, r) {
                 var e = window.location;
                 window.location.href = "/entrance?return_url=" + encodeURIComponent(window.location.href) + e.search.replace("?", "&") + "#/register"
             },
+			_onMoney: function() {
+				//alert("failed");
+                redirect();
+			},
             render: function() {
                 var e = window.location.pathname,
                     t = 1 == this.userInfo.tenantId ? this.state.userAvatar : this.state.userAvatar + l.picture.webHead;
@@ -185,8 +189,9 @@ webpackJsonp([4], [function(e, t, r) {
                     }
                 }, s.personal), n.createElement("a", {
                     className: "nav-item discovery" + ("/discovery" === e ? " active" : ""),
-                    href: "/discovery",
-                    target: "_blank"
+					onClick: this._onMoney,
+                    href: "http://127.0.0.1:8087/pay/index.php/Home/Recharge/index?userid="+ this.userInfo.userId,
+                    target: "_blank",
                 }, s.find), 1 != this.userInfo.tenantId ? n.createElement("div", {
                     className: "nav-item about",
                     onClick: this._onSupportClick
@@ -8890,7 +8895,7 @@ webpackJsonp([4], [function(e, t, r) {
     var n = r(145),
         i = {};
     i.getTradeLogs = function(e) {
-        return n.doPost("/api/v1/trade/trade-logs/search", {
+        return n.doPost("/trader/index.php/Home/OperLog/trade_logs_search", {
             data: JSON.stringify(e)
         })
     }, e.exports = i

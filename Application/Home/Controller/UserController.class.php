@@ -550,15 +550,18 @@ class UserController extends Controller {
         }
         $randomkey = $_GET['randomKey'];
         //生成的验证码信息会保存到session中
-        $Verify = new \Think\Verify();
+        $config = array(
+            'length' => 4, // 验证码位数
+        );
+        $Verify = new \Think\Verify($config);
         $Verify->entry($randomkey);
         return;
     }
 
     // 检测输入的验证码是否正确，$code为用户输入的验证码字符串
-    public function check_verify($code, $id = ''){
+    public function check_verify($code){
         $verify = new \Think\Verify();
-        return $verify->check($code, $id);
+        return $verify->check($code);
     }
 
     /****************************************************************
@@ -582,11 +585,11 @@ class UserController extends Controller {
 
         $request_obj = $this->uiAdapterSer->parseRequstParaToForgetPasscode($request_para);
 
-        $iret = $this->check_verify($request_obj->verification, $request_obj->randomKey);
-        if(iret == false)
+        $iret = $this->check_verify($request_obj->verification);
+        if($iret == false)
         {
             $this->logerSer->logError("The verification is not right.");
-            $result['message'] = "验证码已发送，请注意查收";  $result['result'] = 1;
+            $result['message'] = "识别码过期或输入错误";  $result['result'] = 0;
             $output = $this->uiAdapterSer->parseMsgObjToForgetPasscode($result, $request_obj);
             $this->ajaxReturn($output , 'JSON');
             return;
@@ -768,7 +771,61 @@ class UserController extends Controller {
         $output = $this->uiAdapterSer->parseMsgObjToResetPasscode($result, NULL);
         $this->ajaxReturn($output , 'JSON');
         return;
-
     }
+
+    /**
+     * 定期刷新用户的信息，更新周期为10min = 60s
+     * @return [type] [description]
+     * 对外接口:user/user_renewal
+     */
+    public function user_renewal()
+    {
+        if(false == IS_POST)
+        {
+            $this->logerSer->logError("Message Type failed.");
+            $result['message'] = "消息类型错误"; $result['result'] = 0;
+            $output = $this->uiAdapterSer->parseMsgObjToUserRenewal($result, NULL, NULL);
+            $this->ajaxReturn($output , 'JSON');
+            return;
+        }
+
+        $request_payload = file_get_contents('php://input');
+        $request_para = (array)json_decode($request_payload);
+
+        $account = $request_para['tenantId'];
+        $newPassword = $request_para['account'];
+        $expiredAt = $request_para['expiredAt'];
+        $apiKey = $request_para['apiKey'];
+        $newExpire = $request_para['newExpire'];
+
+        $authtype =  $this->userSer->JudgeAccountType($account);
+        if($authtype == "other")
+        {
+            $this->logerSer->logError("Check account type failed.");
+            $result['message'] = "传递参数错误"; $result['result'] = 0;
+            $output = $this->uiAdapterSer->parseMsgObjToUserRenewal($result, NULL, NULL);
+            $this->ajaxReturn($output , 'JSON');
+            return;
+        }
+
+        $this->logerSer->logInfo("The authtype is $authtype.");
+
+        $user = $this->userSer->getUserByAccount($account, $authtype);
+        if (NULL == $user)
+        {
+            $this->logerSer->logError("Check account info failed.");
+            $result['message'] = "更新认证信息失败"; $result['result'] = 0;
+            $output = $this->uiAdapterSer->parseMsgObjToUserRenewal($result, NULL, NULL);
+            $this->ajaxReturn($output , 'JSON');
+            return;
+        }
+
+        $result['message'] = "更新认证信息成功"; $result['result'] = 1;
+        $output = $this->uiAdapterSer->parseMsgObjToUserRenewal($result, $user, $request_para);
+        $this->ajaxReturn($output , 'JSON');
+        return;
+    }
+
+
 
 }

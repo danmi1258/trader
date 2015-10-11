@@ -100,7 +100,7 @@ class OrderService extends Model {
             return false;
         }
 
-        $result =$Model->fetchSql(false)->where("tradeid=%s", $orderId)->select();
+        $result =$Model->fetchSql(false)->where("tradeid=%s", $orderId)->find();
         return $result;
     }
 
@@ -213,6 +213,25 @@ class OrderService extends Model {
         return true;
     }
 
+    public function updateTradeOrderByOrderId($orderId, $order)
+    {
+        $Model = D('Order');
+
+        if(NULL == $Model)
+        {
+            $this->logerSer->logError("Execute sql failed.");
+            return false;
+        }
+        $Model->create($order);
+
+        $iret =$Model->where('tradeid='.$orderId)->save();
+        if(false == $iret)
+        {
+            return false;
+        }
+        return true;
+    }
+
     public function computeGain($order)
     {
         //TODO 是否从mtd4服务器进行计算
@@ -292,6 +311,51 @@ class OrderService extends Model {
         return true;
     }
 
+    public function getOrderTypePrefix($orderType)
+    {
+        if(is_null($orderType))
+        {
+            $this->logerSer->logError("order type is null");
+            return "error";
+        }
+
+        switch($orderType)
+        {
+            case 0:
+                return "Buy";
+            case 1:
+                return "Sell";
+            case 2:
+                return "BuyLimit";
+            case 3:
+                return "SellLimit";
+            case 4:
+                return "BuyStop";
+            case 5:
+                return "SellStop";
+            default:
+                return "error";
+        }
+    }
+
+    public function isRestingOrder($orderType)
+    {
+        if($orderType == 2 || $orderType == 3 ||
+            $orderType == 4 || $orderType == 5)
+        {
+            return true;
+        }
+        return false;
+    }
+
+    public function isOrdinaryOrder($orderType)
+    {
+        if($orderType == 0 || $orderType == 1)
+        {
+            return true;
+        }
+        return false;
+    }
 
 
 }

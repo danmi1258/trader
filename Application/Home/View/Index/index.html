@@ -26,6 +26,44 @@
         }
     </style>
 
+	<script type="text/javascript">
+
+    $("#btnClose").click(function()
+        {
+            $("#BgDiv").css("display","none");
+            $("#DialogDiv").css("display","none");
+        });
+
+    function redirect()
+    {
+        //alert("123");
+        $("#BgDiv").css({ display:"block",height:$(document).height()});
+        var yscroll=document.documentElement.scrollTop;
+        $("#DialogDiv").css("top","300px");
+        $("#DialogDiv").css("display","block");
+        document.documentElement.scrollTop=0;
+    }
+
+	</script>
+
+	<style type="text/css">
+        body,h2{margin:0 ; padding:0;}
+        #BgDiv{background-color:#e3e3e3; position:absolute; z-index:99; left:0; top:0; display:none; width:100%; height:1000px;opacity:0.5;filter: alpha(opacity=50);-moz-opacity: 0.5;}
+        #DialogDiv{position:absolute;width:400px; left:50%; top:50%; margin-left:-200px; height:auto; z-index:100;background-color:#fff; border:1px #8FA4F5 solid; padding:1px;}
+        #DialogDiv h2{ height:25px; font-size:14px; background-color:#8FA4F5; position:relative; padding-left:10px; line-height:25px;}
+        #DialogDiv h2 a{position:absolute; right:5px; font-size:12px; color:#000000}
+        #DialogDiv .form{padding:10px;}
+	</style>
+	
+	<div id="BgDiv"></div>
+    <div id="DialogDiv" style="display:none">
+        <h2><a href="#" id="btnClose"></a></h2>
+        请您在新打开的页面上完成付款。<br/>
+        付款完成前请不要关闭此窗口。<br/>
+        完成付款后请根据您的情况点击下面的按钮：<br>
+        <input value="已完成付款" class="but" type="button" id="xxx" onclick="close_dig()"/>
+        <input value="付款遇见问题" class="but" type="button" id="yyyy" onclick="close_dig()"/>
+    </div>
 
 </head>
 

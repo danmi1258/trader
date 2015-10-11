@@ -3762,7 +3762,7 @@
             ignore: !0
         })
     }, i.renewal = function(e, t) {
-        return r.doPost("/api/v1/auth/renewal", {
+        return r.doPost("/trader/index.php/Home/User/user_renewal", {
             data: JSON.stringify(e)
         }, t)
     }, i.guest = function(e) {
@@ -3788,17 +3788,17 @@
             ignore: !0
         })
     }, i.forgetSendCaptcha = function(e) {
-        return r.doPost("/api/v1/user/contact/forget", {
+        return r.doPost("/trader/index.php/Home/User/forget_passcode", {
             data: JSON.stringify(e),
             ignore: !0
         })
     }, i.resetPassword = function(e) {
-        return r.doPost("/api/v1/user/password/forget", {
+        return r.doPost("/trader/index.php/Home/User/renew_password", {
             data: JSON.stringify(e),
             ignore: !0
         })
     }, i.checkAccountValid = function(e) {
-        return r.doPost("/api/v1/user/account/valid", {
+        return r.doPost("/trader/index.php/Home/User/preverify_modify_password", {
             data: JSON.stringify(e),
             ignore: !0
         })
@@ -4360,7 +4360,7 @@
         reLogin: "登录"
     }, e.exports.headerMsg = {
         trader: "交易",
-        find: "发现",
+        find: "充值",
         personal: "个人中心",
         settings: "个人设置",
         logout: "退出",

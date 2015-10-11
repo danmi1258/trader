@@ -88,7 +88,7 @@ CREATE TABLE `tbl_historytrade` (
   `comment` varchar(255) DEFAULT NULL,
   `istrade` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`autotradeid`)
-) ENGINE=InnoDB AUTO_INCREMENT=59 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8;
 
 #
 # Dumping data for table tbl_historytrade
@@ -96,6 +96,8 @@ CREATE TABLE `tbl_historytrade` (
 
 LOCK TABLES `tbl_historytrade` WRITE;
 /*!40000 ALTER TABLE `tbl_historytrade` DISABLE KEYS */;
+INSERT INTO `tbl_historytrade` VALUES (27,'1','1','USDJPY',2,1,'2015/10/10 03:06:32',-0.08,'2015/10/10 04:12:30',0,-100,50,1,NULL,NULL,NULL,'0');
+INSERT INTO `tbl_historytrade` VALUES (28,'2','1','USDJPY',2,1,'2015/10/10 04:16:07',-0.08,'2015/10/10 04:45:29',0,-50,100,1,NULL,NULL,NULL,'0');
 /*!40000 ALTER TABLE `tbl_historytrade` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -142,7 +144,7 @@ CREATE TABLE `tbl_openbarn` (
   `stopgainprice` double DEFAULT NULL,
   `comment` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`autoopenbarnid`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 #
 # Dumping data for table tbl_openbarn
@@ -174,6 +176,45 @@ CREATE TABLE `tbl_oper` (
 
 LOCK TABLES `tbl_oper` WRITE;
 /*!40000 ALTER TABLE `tbl_oper` DISABLE KEYS */;
+INSERT INTO `tbl_oper` VALUES (1,1,'2015/10/07 16:41:52',1,'127.0.0.1','order #1 open(0) EURUSD in price 0.');
+INSERT INTO `tbl_oper` VALUES (2,2,'2015/10/07 16:42:01',1,'127.0.0.1','order #2 open(0) USDJPY in price 0.');
+INSERT INTO `tbl_oper` VALUES (3,3,'2015/10/07 17:11:23',1,'127.0.0.1','order #3 open(2) EURUSD in price -0.01.');
+INSERT INTO `tbl_oper` VALUES (4,4,'2015/10/07 17:12:20',1,'127.0.0.1','order #4 open(3) EURUSD in price 1.01.');
+INSERT INTO `tbl_oper` VALUES (5,5,'2015/10/07 17:12:44',1,'127.0.0.1','order #5 open(4) EURUSD in price 1.02.');
+INSERT INTO `tbl_oper` VALUES (6,6,'2015/10/07 17:13:11',1,'127.0.0.1','order #6 open(5) EURUSD in price -0.2.');
+INSERT INTO `tbl_oper` VALUES (7,7,'2015/10/09 02:12:14',1,'127.0.0.1','order #1 open(0) USDJPY in price 119.808.');
+INSERT INTO `tbl_oper` VALUES (8,8,'2015/10/09 02:17:37',1,'127.0.0.1','order #1 close USDJPY in price 119.728.');
+INSERT INTO `tbl_oper` VALUES (9,9,'2015/10/09 02:18:32',1,'127.0.0.1','order #2 open(0) EURUSD in price 1.13132.');
+INSERT INTO `tbl_oper` VALUES (10,10,'2015/10/09 02:30:28',1,'127.0.0.1','order #3 open(0) EURUSD in price 1.12968.');
+INSERT INTO `tbl_oper` VALUES (11,11,'2015/10/09 02:36:05',1,'127.0.0.1','order #4 open(0) EURUSD in price 1.12901.');
+INSERT INTO `tbl_oper` VALUES (12,12,'2015/10/09 02:38:49',1,'127.0.0.1','order #5 open(0) EURUSD in price 1.12848.');
+INSERT INTO `tbl_oper` VALUES (13,13,'2015/10/09 02:41:05',1,'127.0.0.1','order #6 open(0) EURUSD in price 1.12762.');
+INSERT INTO `tbl_oper` VALUES (14,14,'2015/10/09 02:46:07',1,'127.0.0.1','order #7 open(0) EURUSD in price 1.12701.');
+INSERT INTO `tbl_oper` VALUES (15,15,'2015/10/09 02:49:08',1,'127.0.0.1','order #1 open(0) EURUSD in price 1.1271.');
+INSERT INTO `tbl_oper` VALUES (16,16,'2015/10/09 02:50:34',1,'127.0.0.1','order #1 open(0) EURUSD in price 1.12694.');
+INSERT INTO `tbl_oper` VALUES (17,17,'2015/10/09 02:54:38',1,'127.0.0.1','order #2 open(1) USDJPY in price 119.92.');
+INSERT INTO `tbl_oper` VALUES (18,18,'2015/10/09 03:00:29',1,'127.0.0.1','order #1 close EURUSD in price 1.12699.');
+INSERT INTO `tbl_oper` VALUES (19,19,'2015/10/09 03:02:22',1,'127.0.0.1','order #2 close USDJPY in price 120.031.');
+INSERT INTO `tbl_oper` VALUES (20,20,'2015/10/09 03:04:53',1,'127.0.0.1','order #3 open(2) USDJPY in price 100.');
+INSERT INTO `tbl_oper` VALUES (21,21,'2015/10/09 03:10:48',1,'127.0.0.1','order #4 open(4) USDJPY in price 125.');
+INSERT INTO `tbl_oper` VALUES (22,22,'2015/10/09 03:12:27',1,'127.0.0.1','order #5 open(3) USDJPY in price 150.');
+INSERT INTO `tbl_oper` VALUES (23,23,'2015/10/09 03:13:11',1,'127.0.0.1','order #6 open(5) USDJPY in price 100.');
+INSERT INTO `tbl_oper` VALUES (24,24,'2015/10/09 03:14:31',1,'127.0.0.1','order #3  USDJPY delete.');
+INSERT INTO `tbl_oper` VALUES (25,25,'2015/10/09 03:29:07',1,'127.0.0.1','order #7 open(0) EURUSD in price 1.12758.');
+INSERT INTO `tbl_oper` VALUES (26,26,'2015/10/09 03:29:11',1,'127.0.0.1','order #7 close EURUSD in price 0.');
+INSERT INTO `tbl_oper` VALUES (27,27,'2015/10/09 03:34:16',1,'127.0.0.1','order #4  USDJPY delete.');
+INSERT INTO `tbl_oper` VALUES (28,28,'2015/10/09 03:34:16',1,'127.0.0.1','order #5  USDJPY delete.');
+INSERT INTO `tbl_oper` VALUES (29,29,'2015/10/09 03:34:16',1,'127.0.0.1','order #6  USDJPY delete.');
+INSERT INTO `tbl_oper` VALUES (30,30,'2015/10/09 03:35:45',1,'127.0.0.1','order #8 open(2) USDCAD in price 1.301.');
+INSERT INTO `tbl_oper` VALUES (31,31,'2015/10/09 03:37:06',1,'127.0.0.1','order #9 open(2) GBPUSD in price 1.535.');
+INSERT INTO `tbl_oper` VALUES (32,32,'2015/10/09 03:37:48',1,'127.0.0.1','order #10 open(2) USDCAD in price 1.301.');
+INSERT INTO `tbl_oper` VALUES (33,33,'2015/10/10 02:24:09',1,'127.0.0.1','order #10 open(5) USDJPY in price 120.2.');
+INSERT INTO `tbl_oper` VALUES (34,34,'2015/10/10 02:36:41',1,'127.0.0.1','order #1 open(2) GBPUSD in price -0.0006.');
+INSERT INTO `tbl_oper` VALUES (35,35,'2015/10/10 03:06:32',1,'127.0.0.1','order #1 open(2) USDJPY in price -0.08.');
+INSERT INTO `tbl_oper` VALUES (36,36,'2015/10/10 04:12:31',1,'127.0.0.1','order #1 close USDJPY in price 0.');
+INSERT INTO `tbl_oper` VALUES (37,37,'2015/10/10 04:16:07',1,'127.0.0.1','order #2 open(2) USDJPY in price -0.08.');
+INSERT INTO `tbl_oper` VALUES (38,38,'2015/10/10 04:43:20',NULL,'127.0.0.1','order #2 close USDJPY in price 120.');
+INSERT INTO `tbl_oper` VALUES (39,39,'2015/10/10 04:45:29',1,'127.0.0.1','order #2 close USDJPY in price 0.');
 /*!40000 ALTER TABLE `tbl_oper` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -220,7 +261,7 @@ CREATE TABLE `tbl_recharge` (
   `amount` varchar(255) DEFAULT NULL,
   `status` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`autooperid`)
-) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8;
 
 #
 # Dumping data for table tbl_recharge
@@ -258,7 +299,7 @@ CREATE TABLE `tbl_trade` (
   `deadline` varchar(255) DEFAULT NULL,
   `comments` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`autotradeid`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 #
 # Dumping data for table tbl_trade
@@ -308,7 +349,7 @@ CREATE TABLE `tbl_user` (
 
 LOCK TABLES `tbl_user` WRITE;
 /*!40000 ALTER TABLE `tbl_user` DISABLE KEYS */;
-INSERT INTO `tbl_user` VALUES (30,'1',NULL,'875161027@qq.com','hzc1','Wxt130506',NULL,NULL,NULL,NULL,NULL,NULL,'',NULL,'1','200',1202.04,'83zh','http://localhost:8087/trader/Public/userAvatar/1.jpg',NULL,NULL,NULL,NULL,NULL);
+INSERT INTO `tbl_user` VALUES (30,'1',NULL,'875161027@qq.com','hzc1','Wxt130506',NULL,NULL,NULL,NULL,NULL,NULL,'',NULL,'1','200',1202.04,'83zh','http://localhost:8087/trader/Public/userAvatar/1.jpg',NULL,NULL,NULL,NULL,'MYZZd1id');
 /*!40000 ALTER TABLE `tbl_user` ENABLE KEYS */;
 UNLOCK TABLES;
 

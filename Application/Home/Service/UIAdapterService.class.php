@@ -37,8 +37,8 @@ class UIAdapterService extends Model {
         //$authuser->expiredAt = $auth_user->expiredAt;
         $authuser->apiKey = "4c500d631b41709632e527f8ba93aed5a4e33007";
         $authuser->articleVisible = 1;
-        $authuser->authString = "0,15829231577,1441741514";
-        $authuser->expiredAt = 1443862842;
+        $authuser->authString = "0," .$auth_user->account. ",".$auth_user->expiredAt;
+        $authuser->expiredAt = $auth_user->expiredAt;
         $authuser->bindOauth = 0;
         $authuser->brokerDomain = 0;
         $authuser->bwTenant = NULL;
@@ -60,8 +60,8 @@ class UIAdapterService extends Model {
         $authuser->tenantName = NULL;
 
         $authuser->token = NULL;
-        $authuser->twTimeout = 600;
-        $authuser->userAvatar = "https://p-picture.b0.upaiyun.com/0/84cb62a9-8140-41e3-82a7-30a01e2235524591238998654350959.jpg";
+        $authuser->twTimeout = 600;  //自动退出的时间间隔
+        $authuser->userAvatar = $authuser->userAvatar = ($inner_user['userAvatar']==NULL) ? "https://p-picture.b0.upaiyun.com/0/84cb62a9-8140-41e3-82a7-30a01e2235524591238998654350959.jpg" : $inner_user['userAvatar'];
         $authuser->userId = $inner_user['userid'];
         $authuser->verification = NULL;
 
@@ -196,7 +196,7 @@ class UIAdapterService extends Model {
         $user->randomKey = NULL;
         $user->rePassword = $currentUser['password'];
         $user->tenantId = 0;
-        $user->userAvatar = $currentUser['userAvatar'];
+        $user->userAvatar = ($currentUser['userAvatar']==NULL) ? "https://p-picture.b0.upaiyun.com/0/84cb62a9-8140-41e3-82a7-30a01e2235524591238998654350959.jpg" : $currentUser['userAvatar'];
         $user->userId = $currentUser['userid'];
         $user->verification = NULL;
         $user->zipcode = NULL;
@@ -277,7 +277,7 @@ class UIAdapterService extends Model {
         $orderpara->openPrice = NULL;
         $orderpara->operation = NULL;
         $orderpara->order = NULL;
-        $this->logerSer->logInfo("helo".$request_para['price']);
+        //$this->logerSer->logInfo("helo".$request_para['price']);
         return $orderpara;
     }
 
@@ -310,14 +310,14 @@ class UIAdapterService extends Model {
             $data->reserved2 = 0;
             $data->reserved3 = 0;
             $data->reserved4 = 0;
-            $data->sl = $order['stopgainprice'];
+            $data->sl = $order['stoplossprice'];
             $data->spread = NULL;
             $data->state = 0;  //?
             $data->storage = 0;   //?
             $data->symbol = $order['goodname'];
             $data->taxes = 0; //?
             $data->timestamp = NULL;  //?
-            $data->tp = $order['stoplossprice'];
+            $data->tp = $order['stopgainprice'];
             $data->value_date = NULL; //
             $data->volume = $order['tradenum']; //
             $orders[] = $data;
@@ -558,6 +558,55 @@ class UIAdapterService extends Model {
         $output->result = $result['result'];
         return $output;
 
+    }
+
+    public function parseMsgObjToUserRenewal($result, $inner_user, $request_para)
+    {
+        $output = new \stdClass;
+        if($result['result'] != 1)
+        {
+            $output->data = NULL;
+            $output->result = 0;
+            $output->message = $result['message'];
+            return;
+        }
+        $output->result = $result['result'];
+        $output->message = $result['message'];
+
+        $authuser = new \stdClass;
+        $authuser->account = $request_para['account'];
+        $authuser->apiKey = $request_para['apiKey'];
+        $authuser->articleVisible = 1;
+        $authuser->authString = "0,". $request_para['account'] ."," .$request_para['newExpire'];
+        $authuser->expiredAt = $request_para['newExpire'];
+        $authuser->bindOauth = 0;
+        $authuser->brokerDomain = 0;
+        $authuser->bwTenant = NULL;
+        $authuser->device =  NULL;
+        $authuser->email = $inner_user['email'];
+        $authuser->guest = false;
+        $authuser->ip = NULL;
+        $authuser->locale = "zh";
+        $authuser->login = NULL;
+
+        $authuser->mt4Group = "demoTWVIR";
+        $authuser->nickname = $inner_user['petname'];
+        $authuser->introducerIdType = NULL;
+        $authuser->phone = $inner_user['phonenum'];
+        $authuser->randomKey = NULL;
+        $authuser->serviceId = 2;
+        $authuser->symbols = NULL;
+        $authuser->tenantId = "0";
+        $authuser->tenantName = NULL;
+
+        $authuser->token = NULL;
+        $authuser->twTimeout = 600;  //自动退出的时间间隔
+        $authuser->userAvatar = ($inner_user['userAvatar']==NULL) ? "https://p-picture.b0.upaiyun.com/0/84cb62a9-8140-41e3-82a7-30a01e2235524591238998654350959.jpg" : $inner_user['userAvatar'];
+        $authuser->userId = $inner_user['userid'];
+        $authuser->vip = 0;
+
+        $out->data = $authuser;
+        return $out;
     }
 
 
