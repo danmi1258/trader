@@ -115,6 +115,20 @@ class RedisSetService extends Cache {
         return true;
     }
 
+    public function HSetGet($hashName, $key)
+    {
+        if($hashName == NULL || $key == NULL)
+        {
+            return false;
+        }
+        $result = $this->handler->hGet($hashName, $key);
+        if($result == NULL) {
+             $this->logerSer->logError("redis:get hset $hashName $key failed.");
+            return NULL;
+        }
 
+        $this->logerSer->logInfo("redis:get hset $hashName $key success($result).");
+        return $result;
+    }
 
 }

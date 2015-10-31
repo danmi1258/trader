@@ -3,7 +3,7 @@
 namespace Home\Service;
 use Think\Model;
 use Think\Log;
-
+use Home\Service\RedisSetService;
 /****************************************************************
 类名：OrderService
 类描述：订单相关操作服务接口
@@ -12,14 +12,15 @@ use Think\Log;
 class OrderService extends Model {
 
     Protected $autoCheckFields = false;
-
     private $toolkitSer;
+    private $RedisSer;
 
     public function __construct()
     {
         parent::__construct();
         $this->logerSer = D('Log', 'Service');
         $this->toolkitSer = D('ToolKit', 'Service');
+        $this->redisSer = new RedisSetService();
 
     }
 
@@ -177,7 +178,7 @@ class OrderService extends Model {
             return false;
         }
 
-        $result =$Model->fetchSql(false)->where("tradeid=%s", $orderId)->select();
+        $result =$Model->fetchSql(false)->where("tradeid=%s", $orderId)->find();
         return $result;
     }
 
@@ -205,7 +206,7 @@ class OrderService extends Model {
         }
         $Model->create($order);
 
-        $iret =$Model->where('tradeid='.$orderId)->save();
+        $iret =$Model->fetchSql(false)->save();
         if(false == $iret)
         {
             return false;
@@ -238,17 +239,19 @@ class OrderService extends Model {
         $order['price']; //当前价格
         $order['volume'];  //容量
         $order['symbol']; //货比类型
-        $order['ask']; // 止盈
-        $order['bid'];  //止损
+        $order['ask']; // 买入价格
+        $order['bid'];  //卖出价格
         $order['openPrice']; //开始的价钱
         $order['cmd']; //买卖模式
         return ($order['price'] - $order['openPrice']) * $order['volume'];
     }
 
-    public function closeOrderToOrder($userid, $order)
+    public function closeOrderToOrder($user, $order)
     {
         $order['order']; //订单号
-        $gainMoney = $this->computeGain($order);
+        $gainMoney = $this->calc_money($order);
+        $this->logerSer->logInfo("test= ".$gainMoney. " levenum=". $user['levenum']);
+        $gainMoney = $gainMoney/$user['levenum'];
 
         $histOrder  = $this->getHistOrderByOrderId($order['order']);
         $histOrder['operendtime'] = $this->toolkitSer->getSysTime();
@@ -357,5 +360,155 @@ class OrderService extends Model {
         return false;
     }
 
+    public function getGoodInfoBySymbol($symbol)
+    {
+        if(NULL == $symbol)
+        {
+            return NULL;
+        }
+        $Model = D("Good");
+        if(NULL == $Model)
+        {
+            $this->logerSer->logError("Execute sql failed.");
+            return NULL;
+        }
+
+        $result =$Model->fetchSql(false)->where("goodname='%s'", $symbol)->find();
+        return $result;
+    }
+
+    public function  calc_money($order)
+    {
+        $order['price']; //当前价格
+        $order['volume'];  //容量
+        $order['symbol']; //货比类型
+        $order['ask']; // 买入价格
+        $order['bid'];  //卖出价格
+        $order['openPrice']; //开始的价钱
+        $order['cmd']; //买卖模式
+
+        //根据$order[symbol]从db中获取good的对象
+        $good = $this->getGoodInfoBySymbol($order['symbol']);
+        if(NULL == $good)
+        {
+            return array(
+                    "result"=> "failed",
+                    "money" => 0.0,
+                    "desc" => "failed to get $good",
+                );
+        }
+        $this->logerSer->logInfo("calc money for". $order['symbol']. " ". $good['swaptype']);
+        $money = 0;
+        switch ($good['swaptype'])
+        {
+            case 0:
+                //直盘情况
+                $this->logerSer->logInfo("direct trader.");
+                $money = $this->calc_money_by_direct($order, $good);
+                break;
+            case 1:
+                //非直盘情况
+                $this->logerSer->logInfo("not_direct trader.");
+                $money = $this->calc_money_by_notdirect($order, $good);
+                break;
+            case 2:
+                //交叉盘的情况
+                $this->logerSer->logInfo("cross trader.");
+                $money = $this->calc_money_by_cross($order, $good);
+                break;
+            default:
+                $this->logerSer->logInfo("love trader.");
+                break;
+        }
+
+
+        return $money;
+    }
+
+    public function calc_money_by_direct($order, $good)
+    {
+        $gain = 0.0;
+        if(0 == $order['cmd'])
+        {
+            $gain = $order['price'] - $order['openPrice'];
+        }else if(1 == $order['cmd'])
+        {
+            $gain = $order['openPrice'] - $order['price'];
+        }else{
+            $gain = 0;
+            $this->logerSer->logError("the trader cmd is not right.");
+        }
+
+        $this->logerSer->logInfo("info:". $order['volume']. " ". $good['point']);
+        $pointValue = $order['volume']*$good['contractsize']*$good['point'];
+        $point = $gain/$good['point'];
+        $money = $point * $pointValue;
+        $this->logerSer->logInfo($order['volume']." ".$order['contractsize']. " ".$good['point']);
+        $this->logerSer->logInfo("direct calc:point=" .$point . "  pointValue=" .$pointValue. " money=".$money);
+        return $money;
+    }
+
+    public function calc_money_by_notdirect($order, $good)
+    {
+        $gain = 0.0;
+        $pointValue=0.0;
+
+        $symbolJ_base = $this->getRealTimeSymbol($order['symbol']);
+        $this->logerSer->logInfo("symbol:". $order['symbol']. " ask=".$symbolJ_base['ask']. " bid=". $symbolJ_base['bid']);
+
+        if(0 == $order['cmd'])
+        {
+            //买入
+            $gain = $order['price'] - $order['openPrice'];
+            $pointValue = $order['volume']*$good['contractsize']*$good['point']/$symbolJ_base['bid'];
+        }else if(1 == $order['cmd'])
+        {
+            //卖出
+            $gain = $order['openPrice'] - $order['price'];
+            $pointValue = $order['volume']*$good['contractsize']*$good['point']/$symbolJ_base['bid'];
+        }else{
+            $gain = 0;
+            $this->logerSer->logError("the trader cmd is not used.");
+        }
+        $this->logerSer->logInfo("info:". $order['volume']. " ". $good['point']);
+
+        $point = $gain/$good['point'];
+        $money = $pointValue*$point;
+        $this->logerSer->logInfo("direct calc:point=" .$point . "  pointValue=" .$pointValue. " money=".$money);
+        return $money;
+    }
+
+
+    public function calc_money_by_cross($order, $good)
+    {
+        $gain = 0.0;
+        if(0 == $order['cmd'])
+        {
+            $gain = $order['price'] - $order['openPrice'];
+        }else if(1 == $order['cmd'])
+        {
+            $gain = $order['openPrice'] - $order['price'];
+        }else{
+            $gain = 0;
+            $this->logerSer->logError("the trader cmd is not right.");
+        }
+
+        $symbolJ= substr_replace($order['symbol'], "USD", 4, 3);
+        $symbolJ_base = $this->getRealTimeSymbol($symbolJ);
+        $symbolJ_new = $this->getRealTimeSymbol($order['symbol']);
+        $pointValue = $order['volume']*100000*$symbolJ_base['ask']/$symbolJ_new['ask'];
+        $pointNum = $gain/$good['point'];
+        return $pointValue*$pointNum;
+
+    }
+
+    public function getRealTimeSymbol($symbol)
+    {
+        /*从*/
+        $str = $this->redisSer->HSetGet("SymbolHSet", $symbol);
+        $this->logerSer->logInfo("the RealTime symbol is=". $str);
+        $obj = (array)json_decode($str);
+        return $obj;
+    }
 
 }

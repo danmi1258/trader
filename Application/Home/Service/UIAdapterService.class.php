@@ -34,7 +34,6 @@ class UIAdapterService extends Model {
         $authuser = new \stdClass;
         $authuser->account = $auth_user->account;
         $authuser->password = $auth_user->password;
-        //$authuser->expiredAt = $auth_user->expiredAt;
         $authuser->apiKey = "4c500d631b41709632e527f8ba93aed5a4e33007";
         $authuser->articleVisible = 1;
         $authuser->authString = "0," .$auth_user->account. ",".$auth_user->expiredAt;
@@ -61,7 +60,14 @@ class UIAdapterService extends Model {
 
         $authuser->token = NULL;
         $authuser->twTimeout = 600;  //自动退出的时间间隔
-        $authuser->userAvatar = $authuser->userAvatar = ($inner_user['userAvatar']==NULL) ? "https://p-picture.b0.upaiyun.com/0/84cb62a9-8140-41e3-82a7-30a01e2235524591238998654350959.jpg" : $inner_user['userAvatar'];
+        if($inner_user['avatar']==NULL)
+        {
+            $authuser->userAvatar = "http://". C('HOST_IP').":".C('HOST_PORT'). "/trader/Public/userAvatar/0.jpg";
+        }
+        else
+        {
+            $authuser->userAvatar = "http://". C('HOST_IP').":".C('HOST_PORT'). $inner_user['avatar'];
+        }
         $authuser->userId = $inner_user['userid'];
         $authuser->verification = NULL;
 
@@ -155,6 +161,7 @@ class UIAdapterService extends Model {
         $output = new \stdClass;
         if(NULL != $registeruser)
         {
+            $registeruser->userAvatar = "http://". C('HOST_IP').":".C('HOST_PORT'). $registeruser->userAvatar;
             $output->data = $registeruser;
         }
         $output->message = $result['message'];
@@ -196,7 +203,16 @@ class UIAdapterService extends Model {
         $user->randomKey = NULL;
         $user->rePassword = $currentUser['password'];
         $user->tenantId = 0;
-        $user->userAvatar = ($currentUser['userAvatar']==NULL) ? "https://p-picture.b0.upaiyun.com/0/84cb62a9-8140-41e3-82a7-30a01e2235524591238998654350959.jpg" : $currentUser['userAvatar'];
+        $user->userAvatar = NULL;
+        if($currentUser['avatar']==NULL)
+        {
+            $user->userAvatar = "http://". C('HOST_IP').":".C('HOST_PORT'). "/trader/Public/userAvatar/0.jpg";
+        }
+        else
+        {
+            $user->userAvatar = "http://". C('HOST_IP').":".C('HOST_PORT'). $currentUser['avatar'];
+        }
+        //$user->userAvatar = "http://". C('HOST_IP').":".C('HOST_PORT'). "/trader/Public/userAvatar/0.jpg";
         $user->userId = $currentUser['userid'];
         $user->verification = NULL;
         $user->zipcode = NULL;
@@ -348,7 +364,7 @@ class UIAdapterService extends Model {
             $data->activation = 0;
             $data->close_price = $order['operendprice'];  //平仓之后的价格
             $data->close_time = strtotime($order['operendtime']);
-            $data->cmd = 0;
+            $data->cmd = $order['tradetype'];
             $data->comment = $order['comment'];
             $data->commission = 0;
             $data->commission_agent = 0;
@@ -601,7 +617,14 @@ class UIAdapterService extends Model {
 
         $authuser->token = NULL;
         $authuser->twTimeout = 600;  //自动退出的时间间隔
-        $authuser->userAvatar = ($inner_user['userAvatar']==NULL) ? "https://p-picture.b0.upaiyun.com/0/84cb62a9-8140-41e3-82a7-30a01e2235524591238998654350959.jpg" : $inner_user['userAvatar'];
+        if($inner_user['avatar']==NULL)
+        {
+            $authuser->userAvatar = "http://". C('HOST_IP').":".C('HOST_PORT'). "/trader/Public/userAvatar/0.jpg";
+        }
+        else
+        {
+            $authuser->userAvatar = "http://". C('HOST_IP').":".C('HOST_PORT'). $inner_user['avatar'];
+        }
         $authuser->userId = $inner_user['userid'];
         $authuser->vip = 0;
 

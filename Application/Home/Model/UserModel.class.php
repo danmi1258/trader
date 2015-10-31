@@ -12,7 +12,7 @@ class UserModel extends Model {
 			'email', 'petname', 'password', 'sex',
 			'birthday', 'country', 'address', 'postcode',
 			'phonenum', 'mobilenum', 'identitynum',
-			'ischeck', 'levenum', 'balance', 'authnum', 'userAvatar',
+			'ischeck', 'levenum', 'balance', 'authnum', 'avatar',
             'reemail', 'reemailchecksum', 'rephone', 'rephonechecksum',
             'repasswordchecksum');
     protected $pk = array('autouserid');

@@ -31,14 +31,15 @@ class UserController extends Controller {
     *****************************************************************/
     public function register()
     {
+        $result=array();
+        $output=NULL;
+        $registeruser=NULL;
 
     	if(false == IS_POST)
     	{
             $this->logerSer->logError("Message Type failed.");
             $result['message'] = "消息类型错误"; $result['result'] = 0;
-            $output = $this->uiAdapterSer->parsePostMsgToReg($result, NULL);
-            $this->ajaxReturn($output , 'JSON');
-            return;
+            goto ERROR;
     	}
 
     	$request_payload = file_get_contents('php://input');
@@ -49,9 +50,7 @@ class UserController extends Controller {
     	{
             $this->logerSer->logError("Input password is not same.");
             $result['message'] = "两次密码输入不一致"; $result['result'] = 0;
-    	    $output = $this->uiAdapterSer->parsePostMsgToReg($result, $registeruser);
-            $this->ajaxReturn($output , 'JSON');
-    	    return;
+    	    goto ERROR;
     	}
 
     	$authtype =  $this->userSer->JudgeAccountType($registeruser->account);
@@ -59,28 +58,28 @@ class UserController extends Controller {
     	{
             $this->logerSer->logError("Check account type failed.");
     	    $result['message'] = "传递参数错误";  $result['result'] = 0;
-    	    $output = $this->uiAdapterSer->parsePostMsgToReg($result, $registeruser);
-            $this->ajaxReturn($output , 'JSON');
-    	    return;
+    	    goto ERROR;
     	}
+        if($authtype == "phone")
+        {
+            $this->logerSer->logError("Check account type failed.");
+            $result['message'] = "当前系统暂不支持手机验证";  $result['result'] = 0;
+            goto ERROR;
+        }
 
     	$user = $this->userSer->getUserByAccount($registeruser->account, $authtype);
     	if (NULL == $user)
     	{
             $this->logerSer->logError("The User is not exist.");
             $result['message'] = "验证码错误"; $result['result'] = 0;
-            $output = $this->uiAdapterSer->parsePostMsgToReg($result, $registeruser);
-            $this->ajaxReturn($output , 'JSON');
-            return;
+            goto ERROR;
 
     	}else if(NULL != $user && "1" == $user['ischeck'])
     	{
     	    //用户已经注册成功
             $this->logerSer->logError("The User is aleady exist.");
             $result['message'] = "用户已经注册成功，请直接登录。";   $result['result'] = 0;
-            $output = $this->uiAdapterSer->parsePostMsgToReg($result, $registeruser);
-            $this->ajaxReturn($output , 'JSON');
-            return;
+            goto ERROR;
     	}
 
     	//正常注册流程
@@ -89,15 +88,17 @@ class UserController extends Controller {
     	    //验证码错误
             $this->logerSer->logError("The captcha is not right.");
     	    $result['message'] = "验证码错误"; $result['result'] = 0;
-    	    $output = $this->uiAdapterSer->parsePostMsgToReg($result, $registeruser);
-            $this->ajaxReturn($output , 'JSON');
-    	    return;
+    	    goto ERROR;
     	}
 
     	$user['password'] = $registeruser->password;
     	$user['petname'] = $registeruser->nickname;
     	$user['ischeck'] = 1;
-        $user['userAvatar'] = "http://localhost:8087/trader/Public/userAvatar/0.jpg";
+        $user['avatar'] = "/trader/Public/userAvatar/0.jpg";
+
+        /*初始化配额以及杠杆比例*/
+        $user['balance'] = 2000;
+        $user['levenum'] = 100;
 
 
     	//写入数据库中  update
@@ -105,16 +106,19 @@ class UserController extends Controller {
     	if(false == $iRet){
             $this->logerSer->logError("Update user info failed.");
             $result['message'] = "系统内部错误";   $result['result'] = 0;
-            $output = $this->uiAdapterSer->parsePostMsgToReg($result, $registeruser);
-            $this->ajaxReturn($output , 'JSON');
-            return;
+            goto ERROR;
     	}
 
         $registeruser->userId = $user['userid'];
-        $registeruser->userAvatar = $user['userAvatar'];
+        $registeruser->userAvatar = $user['avatar'];
 
         $this->logerSer->logError("Register succeed.");
         $result['message'] = "注册成功"; $result['result'] = 1;
+        $output = $this->uiAdapterSer->parsePostMsgToReg($result, $registeruser);
+        $this->ajaxReturn($output , 'JSON');
+        return;
+
+ERROR:
         $output = $this->uiAdapterSer->parsePostMsgToReg($result, $registeruser);
         $this->ajaxReturn($output , 'JSON');
         return;
@@ -172,6 +176,7 @@ class UserController extends Controller {
 
         //返回响应
         $this->logerSer->logInfo("The user auth success.");
+        $this->logerSer->logInfo("image=". $user['avatar']);
         //根据user中的内容填充authuser中的内容
         $postUser = $this->uiAdapterSer->parseInnerUserToPostUser($user, $authUser);
         $result['message'] = "登录成功";  $result['result'] = 1;
@@ -212,10 +217,11 @@ class UserController extends Controller {
     	}
 
     	$authtype =  $this->userSer->JudgeAccountType($account);
-    	if($authtype == "other")
+    	if($authtype == "other" || $authtype=="phone")
     	{
             $this->logerSer->logError("Check account type failed.");
-    	    $result['message'] = "传递参数错误"; $result['result'] = 0;
+    	    $result['result'] = 0; $result['message'] = "传递参数错误";
+            if($authtype=="phone") $result['message'] = "当前系统不支持手机验证，请使用邮箱注册。";
     	    $output = $this->uiAdapterSer->parsePostMsgToPasscode($result, NULL, NULL);
             $this->ajaxReturn($output , 'JSON');
     	    return;
@@ -245,6 +251,10 @@ class UserController extends Controller {
     	    if(false == $ret)
     	    {
                 $this->logerSer->logError("Send AuthNum To User failed.");
+                $result['message'] = "邮件发送失败，请检查邮件服务器或者邮箱是否正常。"; $result['result'] = 0;
+                $output = $this->uiAdapterSer->parsePostMsgToPasscode($result, NULL, NULL);
+                $this->ajaxReturn($output , 'JSON');
+                return;
     	    }
             else
             {
@@ -273,13 +283,32 @@ class UserController extends Controller {
     	    if($user['ischeck'] == "1")
     	    {
                 $this->logerSer->logInfo("The user is already exist.");
-        		$result['message'] = "用户已经存在"; $result['result'] = "1";
+        		$result['message'] = "用户已经存在"; $result['result'] = "0";
         		$output = $this->uiAdapterSer->parsePostMsgToPasscode($result, $newuser, $authtype);
                 $this->ajaxReturn($output , 'JSON');
     	    }else if($user['ischeck'] == "0")
     	    {
-                $this->logerSer->logInfo("The user is checking");
-        		$result['message']="用户已经注册中";	$result['result'] ="1";
+                $this->logerSer->logInfo("The user is checking，retry send new authnum.");
+                if(authtype == "phone")
+                {
+                    $account = $user['mobilenum'];
+                }else{
+                    $account = $user['email'];
+                }
+                $ret = $this->toolkitSer->sendAuthNumToUser($authtype, $account, $user['authnum']);
+                if(false == $ret)
+                {
+                    $result['message'] = "邮件发送失败，请检查邮件服务器或者邮箱是否正常。"; $result['result'] = 0;
+                    $output = $this->uiAdapterSer->parsePostMsgToPasscode($result, NULL, NULL);
+                    $this->ajaxReturn($output , 'JSON');
+                    return;
+                }
+                else
+                {
+                    $this->logerSer->logError("Send AuthNum To User succeed.");
+                }
+
+        		$result['message']="用户已经注册中，请查收验证码。";	$result['result'] ="1";
         		$output = $this->uiAdapterSer->parsePostMsgToPasscode($result, $newuser, $authtype);
                 $this->ajaxReturn($output , 'JSON');
     	    }
@@ -323,14 +352,14 @@ class UserController extends Controller {
         $renewImage = substr($userAvatar, strlen('data:image/bmp;base64,'), strlen($userAvatar));
         $img = base64_decode($renewImage);
         $imgStoragePath = "Public/userAvatar/".$request_user['userId']. ".jpg";
+        unlink($imgStoragePath);
+        unlink($imgStoragePath."!web");
         file_put_contents($imgStoragePath, $img);
         file_put_contents($imgStoragePath."!web", $img);
-        $imageUrlPath="http://".$_SERVER['SERVER_NAME']. ":". $_SERVER["SERVER_PORT"] . __ROOT__ . "/".$imgStoragePath;
-
-        $this->logerSer->logError("hello".$imageUrlPath);
+        $imageUrlPath= __ROOT__ . "/".$imgStoragePath;
 
         $currentUser = $this->userSer->getUserFromDBByUserId($request_user['userId']);
-        $currentUser['userAvatar'] = $imageUrlPath;
+        $currentUser['avatar'] = $imageUrlPath;
 
         if($nickName != NULL)
         {
@@ -492,7 +521,7 @@ class UserController extends Controller {
         {
             $this->logerSer->logError("Message Type failed.");
             $result['message'] = "消息类型错误"; $result['result'] = 0;
-            $output = $this->uiAdapterSer->parsePostMsgToUpdate($result, NULL);
+            $output = $this->uiAdapterSer->parseMsgObjToUpdateVerify($result, NULL);
             $this->ajaxReturn($output , 'JSON');
             return;
         }
@@ -509,6 +538,10 @@ class UserController extends Controller {
         if(false == $iret)
         {
             $this->logerSer->logError("Send authnum failed($authType).");
+            $result['message'] = "邮件发送失败，请检查邮件服务器或者邮箱是否正常。";  $result['result'] = 0;
+            $output = $this->uiAdapterSer->parseMsgObjToUpdateVerify($result, $account);
+            $this->ajaxReturn($output);
+            return;
         }
         $request_user = $this->userSer->getUserFromCookie(cookie('userInfo'));
         $currentUser = $this->userSer->getUserFromDBByUserId($request_user['userId']);
@@ -554,7 +587,8 @@ class UserController extends Controller {
             'length' => 4, // 验证码位数
         );
         $Verify = new \Think\Verify($config);
-        $Verify->entry($randomkey);
+        $Verify->codeSet = '0123456789';
+        $Verify->entry();
         return;
     }
 
@@ -584,6 +618,7 @@ class UserController extends Controller {
         $request_para = (array)json_decode($request_payload);
 
         $request_obj = $this->uiAdapterSer->parseRequstParaToForgetPasscode($request_para);
+        $this->logerSer->logInfo("The verification is ".$request_obj->verification);
 
         $iret = $this->check_verify($request_obj->verification);
         if($iret == false)
@@ -597,10 +632,11 @@ class UserController extends Controller {
         $this->logerSer->logInfo("The verification is right.");
 
         $authtype =  $this->userSer->JudgeAccountType($request_obj->account);
-        if($authtype == "other")
+        if($authtype == "other" || $authtype == "phone")
         {
             $this->logerSer->logError("Check account type failed.");
             $result['message'] = "传递参数错误"; $result['result'] = 0;
+            if($authtype=="phone")  $result['message'] = "当前系统不支持手机验证，请使用邮箱验证。";
             $output = $this->uiAdapterSer->parseMsgObjToForgetPasscode($result, $request_obj);
             $this->ajaxReturn($output , 'JSON');
             return;

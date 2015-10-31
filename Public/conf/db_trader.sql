@@ -52,13 +52,8 @@ CREATE TABLE `tbl_good` (
   `autogoodid` int(11) NOT NULL AUTO_INCREMENT,
   `goodid` int(11) NOT NULL DEFAULT '0',
   `goodname` varchar(255) DEFAULT NULL,
-  `goodtype` varchar(255) DEFAULT NULL,
-  `gooddesc` varchar(255) DEFAULT NULL,
-  `swaptype` varchar(255) DEFAULT NULL,
-  `digits` int(11) DEFAULT NULL,
-  `point` double DEFAULT NULL,
   PRIMARY KEY (`autogoodid`)
-) ENGINE=InnoDB AUTO_INCREMENT=45 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 #
 # Dumping data for table tbl_good
@@ -66,50 +61,6 @@ CREATE TABLE `tbl_good` (
 
 LOCK TABLES `tbl_good` WRITE;
 /*!40000 ALTER TABLE `tbl_good` DISABLE KEYS */;
-INSERT INTO `tbl_good` VALUES (1,0,'EURUSD',NULL,'Euro vs US Dollar','0',5,1E-5);
-INSERT INTO `tbl_good` VALUES (2,0,'XAGUSD',NULL,'Silver vs US Dollar','0',3,0.001);
-INSERT INTO `tbl_good` VALUES (3,0,'USDJPY',NULL,'US Dollar vs Japanese Yen','2',3,0.001);
-INSERT INTO `tbl_good` VALUES (4,0,'AUDUSD',NULL,'Australian Dollar   vs  US Dollar',NULL,5,1E-5);
-INSERT INTO `tbl_good` VALUES (5,0,'USDCHF',NULL,'US Dollar vs Swiss Franc',NULL,5,1E-5);
-INSERT INTO `tbl_good` VALUES (6,0,'USDCAD',NULL,'US Dollar vs Canadian Dollar',NULL,5,1E-5);
-INSERT INTO `tbl_good` VALUES (7,0,'NZDUSD',NULL,'New Zealand Dollar  vs US Dollar',NULL,5,1E-5);
-INSERT INTO `tbl_good` VALUES (8,0,'EURGBP',NULL,'Euro vs Great Britain Poud',NULL,5,1E-5);
-INSERT INTO `tbl_good` VALUES (9,0,'EURJPY',NULL,'Euro vs Japanese Yen',NULL,3,0.001);
-INSERT INTO `tbl_good` VALUES (10,0,'GBPJPY',NULL,'Great Britain Pound  vs Japanese Yen',NULL,3,0.001);
-INSERT INTO `tbl_good` VALUES (11,0,'USDHKD',NULL,'US Dollar vs Hong Kong Dollar',NULL,5,1E-5);
-INSERT INTO `tbl_good` VALUES (12,0,'UKOUSD',NULL,'UKO vs US Dollar',NULL,3,0.001);
-INSERT INTO `tbl_good` VALUES (13,0,'USOUSD',NULL,'USO vs US Dollar',NULL,5,0.001);
-INSERT INTO `tbl_good` VALUES (14,0,'XAUUSD',NULL,'Gold vs US Dollar',NULL,2,0.01);
-INSERT INTO `tbl_good` VALUES (15,0,'GBPUSD',NULL,'Great Britain Pound  vs US Dollar',NULL,5,1E-5);
-INSERT INTO `tbl_good` VALUES (16,0,'USDCNH',NULL,'US Dollar vs Chianese Unit of Currency',NULL,5,1E-5);
-INSERT INTO `tbl_good` VALUES (17,0,'AUDJPY',NULL,'Australian Dollar   vs  Japanese Yen',NULL,3,0.001);
-INSERT INTO `tbl_good` VALUES (18,0,'CHFJPY',NULL,'Swiss Franc  vs  Japanese Yen',NULL,3,0.001);
-INSERT INTO `tbl_good` VALUES (19,0,'CADJPY',NULL,'Canadian Dollar  vs  Japanese Yen',NULL,3,0.001);
-INSERT INTO `tbl_good` VALUES (20,0,'NZDJPY',NULL,'New Zealand Dollar  vs Japanese Yen',NULL,3,0.001);
-INSERT INTO `tbl_good` VALUES (21,0,'EURAUD',NULL,'Euro vs Australian Dollar',NULL,5,1E-5);
-INSERT INTO `tbl_good` VALUES (22,0,'GBPAUD',NULL,'Great Britain Pound  vs Australian Dollar',NULL,5,1E-5);
-INSERT INTO `tbl_good` VALUES (23,0,'EURCHF',NULL,'Euro vs Swiss Franc',NULL,5,1E-5);
-INSERT INTO `tbl_good` VALUES (24,0,'GBPCHF',NULL,'Great Britain Pound  vs Swiss Franc',NULL,5,1E-5);
-INSERT INTO `tbl_good` VALUES (25,0,'AUDCHF',NULL,'Australian Dollar   vs  Swiss Franc',NULL,5,1E-5);
-INSERT INTO `tbl_good` VALUES (26,0,'CADCHF',NULL,'Canadian Dollar  vs  Swiss Franc',NULL,5,1E-5);
-INSERT INTO `tbl_good` VALUES (27,0,'NZDCHF',NULL,'New Zealand Dollar vs Swiss Franc',NULL,5,1E-5);
-INSERT INTO `tbl_good` VALUES (28,0,'AUDCAD',NULL,'Australian Dollar   vs  Canadian Dollar',NULL,5,1E-5);
-INSERT INTO `tbl_good` VALUES (29,0,'EURCAD',NULL,'Euro vs Canadian Dollar',NULL,5,1E-5);
-INSERT INTO `tbl_good` VALUES (30,0,'NZDCAD',NULL,'New Zealand Dollar  vs Canadian Dollar',NULL,5,1E-5);
-INSERT INTO `tbl_good` VALUES (31,0,'GBPCAD',NULL,'Great Britain Pound  vs Canadian  Dollar',NULL,5,1E-5);
-INSERT INTO `tbl_good` VALUES (32,0,'AUDNZD',NULL,'Australian Dollar   vs  New Zealand Dollar',NULL,5,1E-5);
-INSERT INTO `tbl_good` VALUES (33,0,'EURNZD',NULL,'Euro vs New Zenland Dollar',NULL,5,1E-5);
-INSERT INTO `tbl_good` VALUES (34,0,'GBPNZD',NULL,'Great Britain Pound  vs New Zealand Dollar',NULL,5,1E-5);
-INSERT INTO `tbl_good` VALUES (35,0,'USDSGD',NULL,'US Dollar vs Singapoure Dollar',NULL,5,1E-5);
-INSERT INTO `tbl_good` VALUES (36,0,'EURUSD',NULL,'Euro vs US Dollar',NULL,5,1E-5);
-INSERT INTO `tbl_good` VALUES (37,0,'USDJPY',NULL,'US Dollar vs Japanese Yen',NULL,3,0.001);
-INSERT INTO `tbl_good` VALUES (38,0,'GBPUSD',NULL,'Great Britain Pound  vs US Dollar',NULL,5,1E-5);
-INSERT INTO `tbl_good` VALUES (39,0,'USDCHF',NULL,'US Dollar vs Swiss Franc',NULL,5,1E-5);
-INSERT INTO `tbl_good` VALUES (40,0,'USDCAD',NULL,'US Dollar vs Canadian Dollar',NULL,5,1E-5);
-INSERT INTO `tbl_good` VALUES (41,0,'XAUUSD',NULL,'Gold vs US Dollar',NULL,2,0.01);
-INSERT INTO `tbl_good` VALUES (42,0,'UKOUSD',NULL,'UKO vs US Dollar',NULL,3,0.001);
-INSERT INTO `tbl_good` VALUES (43,0,'USOUSD',NULL,'USO vs US Dollar',NULL,3,0.001);
-INSERT INTO `tbl_good` VALUES (44,0,'XAGUSD',NULL,'Silver vs US Dollar',NULL,3,0.001);
 /*!40000 ALTER TABLE `tbl_good` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -137,7 +88,7 @@ CREATE TABLE `tbl_historytrade` (
   `comment` varchar(255) DEFAULT NULL,
   `istrade` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`autotradeid`)
-) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8;
 
 #
 # Dumping data for table tbl_historytrade
@@ -147,7 +98,6 @@ LOCK TABLES `tbl_historytrade` WRITE;
 /*!40000 ALTER TABLE `tbl_historytrade` DISABLE KEYS */;
 INSERT INTO `tbl_historytrade` VALUES (27,'1','1','USDJPY',2,1,'2015/10/10 03:06:32',-0.08,'2015/10/10 04:12:30',0,-100,50,1,NULL,NULL,NULL,'0');
 INSERT INTO `tbl_historytrade` VALUES (28,'2','1','USDJPY',2,1,'2015/10/10 04:16:07',-0.08,'2015/10/10 04:45:29',0,-50,100,1,NULL,NULL,NULL,'0');
-INSERT INTO `tbl_historytrade` VALUES (29,'3','1','EURUSD',0,1,'2015/10/13 23:57:43',1.13828,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'1');
 /*!40000 ALTER TABLE `tbl_historytrade` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -218,7 +168,7 @@ CREATE TABLE `tbl_oper` (
   `ipaddr` varchar(11) DEFAULT NULL,
   `opercontent` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`autoperid`)
-) ENGINE=InnoDB AUTO_INCREMENT=41 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=40 DEFAULT CHARSET=utf8;
 
 #
 # Dumping data for table tbl_oper
@@ -265,7 +215,6 @@ INSERT INTO `tbl_oper` VALUES (36,36,'2015/10/10 04:12:31',1,'127.0.0.1','order 
 INSERT INTO `tbl_oper` VALUES (37,37,'2015/10/10 04:16:07',1,'127.0.0.1','order #2 open(2) USDJPY in price -0.08.');
 INSERT INTO `tbl_oper` VALUES (38,38,'2015/10/10 04:43:20',NULL,'127.0.0.1','order #2 close USDJPY in price 120.');
 INSERT INTO `tbl_oper` VALUES (39,39,'2015/10/10 04:45:29',1,'127.0.0.1','order #2 close USDJPY in price 0.');
-INSERT INTO `tbl_oper` VALUES (40,40,'2015/10/13 23:57:43',1,'127.0.0.1','order #3 open(0) EURUSD in price 1.13828.');
 /*!40000 ALTER TABLE `tbl_oper` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -312,7 +261,7 @@ CREATE TABLE `tbl_recharge` (
   `amount` varchar(255) DEFAULT NULL,
   `status` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`autooperid`)
-) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8;
 
 #
 # Dumping data for table tbl_recharge
@@ -321,7 +270,6 @@ CREATE TABLE `tbl_recharge` (
 LOCK TABLES `tbl_recharge` WRITE;
 /*!40000 ALTER TABLE `tbl_recharge` DISABLE KEYS */;
 INSERT INTO `tbl_recharge` VALUES (25,'20150929001915590239','1','20150929','01','RMB','102.02','succeed');
-INSERT INTO `tbl_recharge` VALUES (26,'20151012002901447926','1','20151012','01','RMB','1002.02','succeed');
 /*!40000 ALTER TABLE `tbl_recharge` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -351,7 +299,7 @@ CREATE TABLE `tbl_trade` (
   `deadline` varchar(255) DEFAULT NULL,
   `comments` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`autotradeid`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 #
 # Dumping data for table tbl_trade
@@ -359,7 +307,6 @@ CREATE TABLE `tbl_trade` (
 
 LOCK TABLES `tbl_trade` WRITE;
 /*!40000 ALTER TABLE `tbl_trade` DISABLE KEYS */;
-INSERT INTO `tbl_trade` VALUES (1,'3','1','EURUSD',0,1,'2015/10/13 23:57:43',1.13828,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
 /*!40000 ALTER TABLE `tbl_trade` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -402,7 +349,7 @@ CREATE TABLE `tbl_user` (
 
 LOCK TABLES `tbl_user` WRITE;
 /*!40000 ALTER TABLE `tbl_user` DISABLE KEYS */;
-INSERT INTO `tbl_user` VALUES (30,'1',NULL,'875161027@qq.com','hzc1','Wxt130506',NULL,NULL,NULL,NULL,NULL,NULL,'',NULL,'1','200',2204.06,'83zh','http://localhost:8087/trader/Public/userAvatar/1.jpg',NULL,NULL,NULL,NULL,'MYZZd1id');
+INSERT INTO `tbl_user` VALUES (30,'1',NULL,'875161027@qq.com','hzc1','Wxt130506',NULL,NULL,NULL,NULL,NULL,NULL,'',NULL,'1','200',1202.04,'83zh','http://localhost:8087/trader/Public/userAvatar/1.jpg',NULL,NULL,NULL,NULL,'MYZZd1id');
 /*!40000 ALTER TABLE `tbl_user` ENABLE KEYS */;
 UNLOCK TABLES;
 

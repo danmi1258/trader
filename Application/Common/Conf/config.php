@@ -26,6 +26,13 @@ return array(
     'MAIL_SECURE'                   =>'tls',
     'MAIL_CHARSET'                  =>'utf-8',
     'MAIL_ISHTML'                   =>TRUE,
-	'MAIL_FROMNAME'					=>'trader外汇贸易',
+	'MAIL_FROMNAME'					=>'www.company.com',
+	'MAIL_SUBJECT'					=>'www.company.com 欢迎你',
+	
+	//主机服务器相关配置
+	'HOST_NAME' 					=>'webservice',
+	'HOST_IP'						=>'127.0.0.1',
+	'HOST_PORT'						=>'8087',
+	
 	
 );

@@ -123,7 +123,12 @@ class OrderController extends Controller {
         foreach($request_orders as $order)
         {
             $errorObj = new \stdClass;
-            $iret = $this->orderSer->closeOrderToOrder($request_user['userId'], $order);
+            $user = $this->userSer->getUserFromDBByUserId($request_user['userId']);
+            if(NULL == $user)
+            {
+                $this->logerSer->logInfo("The user is not exist!");
+            }
+            $iret = $this->orderSer->closeOrderToOrder($user, $order);
             if(false == $iret)
             {
                 $isSuccess = false;

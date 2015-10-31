@@ -29,7 +29,7 @@ class ToolKitService extends Model {
     {
         //发送消息给到邮箱
         $content="尊敬的用户，您正在申请对外汇平台账号进行操作，操作验证码为:".$passcode;
-        $subject = "外汇交易平台校验码测试";
+        $subject = C('MAIL_SUBJECT');
         $this->logerSer->logInfo("email=".$email);
         return sendMail($email, $subject, $content);
     }
@@ -42,6 +42,8 @@ class ToolKitService extends Model {
         }else if ($authtype  == "email")
         {
             return $this->sendMessageByEmail($account, $authnum);
+        }else{
+            return false;
         }
 
     }

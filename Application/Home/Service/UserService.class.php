@@ -109,12 +109,12 @@ class UserService extends Model {
             return NULL;
         }
 
-        $Model = M('User');
+        $Model = D('User');
         if(NULL == $Model){
             $this->logerSer->logError("Create User Model fail.");
             return NULL;
         }
-        $data = $Model->fetchSql(false)->where('userid="'.$userid.'"')->find();
+        $data = $Model->fetchSql(false)->where("userid=%s", $userid)->find();
         return $data;
     }
 
