@@ -106,7 +106,7 @@ webpackJsonp([3], {
                             }
                         } else {
                             var h = Number(l.getItem(u.loginTimes.key)) + 1,
-                                f = e.data.message; - 1 === f.indexOf(v.verificationKey) && (f = v.invalidate), this.setState({
+                                f = e.data.message; (- 1 === f.indexOf(v.verificationKey) && - 1 === f.indexOf(v.userstatusKey)) && (f = v.invalidate), this.setState({
                                 errorMsg: f,
                                 randomKey: i.uuid()
                             }), l.addItem(u.loginTimes.key, h), h >= u.loginTimes.times ? this.setState({

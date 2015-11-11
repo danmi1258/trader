@@ -4518,7 +4518,8 @@
         ios: "iOS",
         android: "Android",
         invalidate: "用户名或密码不正确",
-        verificationKey: "识别码"
+        verificationKey: "识别码",
+        userstatusKey: "用户审核"
     }, e.exports.register = {
         title: "注册",
         verification: "请输入四位识别码",

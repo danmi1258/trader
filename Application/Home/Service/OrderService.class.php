@@ -250,7 +250,7 @@ class OrderService extends Model {
     {
         $order['order']; //订单号
         $gainMoney = $this->calc_money($order);
-        $this->logerSer->logInfo("test= ".$gainMoney. " levenum=". $user['levenum']);
+        $this->logerSer->logInfo("totalMoney=" .$gainMoney ." gainMoney= ".$gainMoney/$user['levenum']. " levenum=". $user['levenum']);
         $gainMoney = $gainMoney/$user['levenum'];
 
         $histOrder  = $this->getHistOrderByOrderId($order['order']);
@@ -413,7 +413,17 @@ class OrderService extends Model {
                 break;
             case 2:
                 //交叉盘的情况
-                $this->logerSer->logInfo("cross trader.");
+                $this->logerSer->logInfo("cross trader-2.");
+                $money = $this->calc_money_by_cross($order, $good);
+                break;
+            case 3:
+                //交叉盘的情况
+                $this->logerSer->logInfo("cross trader-3.");
+                $money = $this->calc_money_by_cross($order, $good);
+                break;
+            case 4:
+                //交叉盘的情况
+                $this->logerSer->logInfo("cross trader-4.");
                 $money = $this->calc_money_by_cross($order, $good);
                 break;
             default:
@@ -482,26 +492,83 @@ class OrderService extends Model {
     public function calc_money_by_cross($order, $good)
     {
         $gain = 0.0;
+        $pointValue=0.0;
+
+        $symbolJ_base = $this->getRealTimeSymbol($order['symbol']);
+        $this->logerSer->logInfo("symbol:". $order['symbol']. " ask=".$symbolJ_base['ask']. " bid=". $symbolJ_base['bid']);
+
         if(0 == $order['cmd'])
         {
+            //买入
             $gain = $order['price'] - $order['openPrice'];
         }else if(1 == $order['cmd'])
         {
+            //卖出
             $gain = $order['openPrice'] - $order['price'];
         }else{
             $gain = 0;
-            $this->logerSer->logError("the trader cmd is not right.");
+            $this->logerSer->logError("the trader cmd is not used.");
         }
+        $this->logerSer->logInfo("info:". $order['volume']. " ". $good['point']);
 
-        $symbolJ= substr_replace($order['symbol'], "USD", 4, 3);
-        $symbolJ_base = $this->getRealTimeSymbol($symbolJ);
-        $symbolJ_new = $this->getRealTimeSymbol($order['symbol']);
-        $pointValue = $order['volume']*100000*$symbolJ_base['ask']/$symbolJ_new['ask'];
-        $pointNum = $gain/$good['point'];
-        return $pointValue*$pointNum;
+        $symbol_sub_start=substr($order['symbol'], 0, 3);
+
+        $pointValue = 0;
+        do{
+            $symbolJ_usd = $this->getRealTimeSymbol($symbol_sub_start."USD");
+            if($symbolJ_usd != NULL)
+            {
+                $pointValue = $order['volume']*$good['contractsize']*$good['point']/$symbolJ_base['bid']*$symbolJ_usd['bid'];
+                break;
+            }
+            $symbolJ_usd = $this->getRealTimeSymbol("USD" .$symbol_sub_start);
+            if($symbolJ_usd != NULL)
+            {
+                $pointValue = $order['volume']*$good['contractsize']*$good['point']/$symbolJ_base['bid']/$symbolJ_usd['bid'];
+                break;
+            }
+            $this->logerSer->logError("the cala is not right.");
+        }while(0);
+
+        $this->logerSer->logInfo("the pointvalue=".$pointValue);
+        $point = $gain/$good['point'];
+        $money = $pointValue*$point;
+        $this->logerSer->logInfo("direct calc:point=" .$point . "  pointValue=" .$pointValue. " money=".$money);
+        return $money;
 
     }
-
+/*
+    //stand for type=2
+    public function calc_money_by_cross_sub1($order, $good)
+    {
+        $symbol_sub_start=substr($order['symbol'], 0, 3);
+        $symbol_sub_end=substr($order['symbol'], 3, 3);
+        $symbolJ_one = $this->getRealTimeSymbol("USD".$symbol_sub_start);
+        $symbolJ_two =  $this->getRealTimeSymbol("USD".$symbol_sub_end);
+        $result_buy = $symbolJ_two['bid']/$symbolJ_one['ask'];
+        $result_buy = $symbolJ_two['ask']/$symbolJ_one['bid'];
+    }
+    //stand for type=3
+    public function calc_money_by_cross_sub2($order, $good)
+    {
+        $symbol_sub_start=substr($order['symbol'], 0, 3);
+        $symbol_sub_end=substr($order['symbol'], 3, 3);
+        $symbolJ_one = $this->getRealTimeSymbol($symbol_sub_start."USD");
+        $symbolJ_two =  $this->getRealTimeSymbol("USD".$symbol_sub_end);
+        $result_sell = $symbolJ_two['bid']/$symbolJ_one['bid'];
+        $result_buy = $symbolJ_two['ask']/$symbolJ_one['ask'];
+    }
+    //stand for type=4
+    public function calc_money_by_cross_sub3($order, $good)
+    {
+        $symbol_sub_start=substr($order['symbol'], 0, 3);
+        $symbol_sub_end=substr($order['symbol'], 3, 3);
+        $symbolJ_one = $this->getRealTimeSymbol($symbol_sub_start."USD");
+        $symbolJ_two =  $this->getRealTimeSymbol($symbol_sub_end."USD");
+        $result_sell = $symbolJ_one['bid']/$symbolJ_two['ask'];
+        $result_buy = $symbolJ_one['ask']/$symbolJ_two['bid'];
+    }
+*/
     public function getRealTimeSymbol($symbol)
     {
         /*从*/

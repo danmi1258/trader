@@ -95,8 +95,10 @@ class UserController extends Controller {
     	$user['petname'] = $registeruser->nickname;
     	$user['ischeck'] = 1;
         $user['avatar'] = "/trader/Public/userAvatar/0.jpg";
+        $user['usertype'] = "注册用户";
+        $user['userstatus'] = "审核中";
 
-        /*初始化配额以及杠杆比例*/
+        /*初始化配额以及杠杆比例，以后写入配置文件*/
         $user['balance'] = 2000;
         $user['levenum'] = 100;
 
@@ -169,6 +171,24 @@ ERROR:
         {
             $this->logerSer->logError("The password is not right.");
             $result['message'] = "密码不正确"; $result['result'] = 0;
+            $output = $this->uiAdapterSer->parsePostMsgToAuth($result, NULL);
+            $this->ajaxReturn($output, 'JSON');
+            return ;
+        }
+
+        if($user['usertype'] != "注册用户")
+        {
+            $this->logerSer->logError("The usertype is not register.");
+            $result['message'] = "用户非注册用户"; $result['result'] = 0;
+            $output = $this->uiAdapterSer->parsePostMsgToAuth($result, NULL);
+            $this->ajaxReturn($output, 'JSON');
+            return ;
+        }
+
+        if($user['userstatus'] != "审核通过")
+        {
+            $this->logerSer->logError("The password is not right.");
+            $result['message'] = "用户审核中，请登录后台查看用户状态。"; $result['result'] = 0;
             $output = $this->uiAdapterSer->parsePostMsgToAuth($result, NULL);
             $this->ajaxReturn($output, 'JSON');
             return ;
